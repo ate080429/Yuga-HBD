@@ -306,7 +306,7 @@
 
   <!-- 動画ボタン -->
   <div class="action-area">
-    <button class="btn-movie" onclick="openMovieModal()">🎬 MEMORY 🎬</button>
+    <button class="btn-movie" onclick="openMovieModal()">🎬 MOVIE 🎬</button>
   </div>
 
   <!-- 🏃‍♂️ 押すたびに逃げていくメッセージボタン -->
@@ -579,7 +579,7 @@
           fireConfetti();
 
           if (itemObj.char === '💎') {
-            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！","20歳は超強運な1年になる予感…！！✨");
+            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
           }
           el.remove();
         };
@@ -594,7 +594,7 @@
       headerTap++;
       if (headerTap === 5) {
         fireConfetti();
-        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！","20代はやりたいこと全部やろうね！🔥");
+        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！\n20代はやりたいこと全部やろうね！🔥");
         addScore(500);
         headerTap = 0;
       }
@@ -621,7 +621,7 @@
       gift.addEventListener('touchstart', () => {
         timer = setTimeout(() => {
           fireConfetti();
-          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！","沢山遊びに行こうね！🚗✨");
+          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！\n沢山遊びに行こうね！🚗✨");
           addScore(500);
         }, 2000);
       });
