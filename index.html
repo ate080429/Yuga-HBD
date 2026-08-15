@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HAPPY BIRTHDAY YUGA!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-color: #fdf6e2;
+      --accent-pink: #ff85a2;
+      --accent-yellow: #fbc531;
+      --accent-red: #e84118;
+      --text-color: #4a3f35;
+    }
+
+    * { box-sizing: border-box; touch-action: manipulation; }
+
+    body {
+      margin: 0; padding: 0;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(#e5d8bd 2px, transparent 2px);
+      background-size: 20px 20px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      color: var(--text-color);
+      text-align: center;
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background-color 0.5s;
+      position: relative;
+    }
+
+    /* 🔒 パスコードロック画面 */
+    #lock-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-color);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    #lock-screen.unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .lock-title {
+      font-family: 'Mochiy Pop P One', sans-serif;
+      font-size: 1.4rem; color: var(--accent-red); margin-bottom: 10px;
+    }
+
+    .pass-dots { display: flex; gap: 15px; margin: 15px 0 25px; }
+    .dot {
+      width: 16px; height: 16px; border: 3px solid var(--text-color);
+      border-radius: 50%; background: transparent; transition: all 0.2s;
+    }
+    .dot.filled { background: var(--accent-pink); border-color: var(--accent-pink); transform: scale(1.2); }
+
+    .keypad {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      max-width: 260px; width: 100%;
+    }
+    .key-btn {
+      background: white; border: 3px solid var(--text-color);
+      border-radius: 50%; width: 65px; height: 65px;
+      font-family: 'Mochiy Pop P One', sans-serif; font-size: 1.4rem;
+      color: var(--text-color); display: flex; justify-content: center; align-items: center;
+      margin: 0 auto; box-shadow: 0 4px 0 var(--text-color); cursor: pointer;
+    }
+    .key-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--text-color); }
+    .key-btn.del-btn { font-size: 0.9rem; background: #ffeaa7; }
+
+    /* レインボーモード */
+    body.rainbow-mode { animation: rainbowBg 2s infinite linear; }
+    @keyframes rainbowBg {
+      0% { background-color: #ffb3ba; }
+      25% { background-color: #bae1ff; }
+      50% { background-color: #baffc9; }
+      75% { background-color: #ffffba; }
+      100% { background-color: #ffb3ba; }
+    }
+
+    /* 🎮 ゲーミングスコア・レベルボード */
+    .score-board {
+      position: fixed; top: 12px; right: 12px;
+      background: white; border: 3px solid var(--text-color);
+      padding: 6px 12px; border-radius: 30px;
+      font-family: 'Mochiy Pop P One', sans-serif;
+      font-size: 0.8rem; z-index: 100;
+      box-shadow: 3px 3px 0 var(--text-color);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .level-badge {
+      background: var(--accent-red); color: white;
+      padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;
+      border: 1.5px solid var(--text-color);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* レベルアップ ポップアップアニメーション */
+    .levelup-banner {
+      position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      background: #fbc531; border: 4px solid var(--text-color);
+      color: var(--text-color); padding: 15px 30px; border-radius: 20px;
+      font-family: 'Mochiy Pop P One', sans-serif; font-size: 1.5rem;
+      z-index: 10000; box-shadow: 6px 6px 0 var(--accent-red);
+      pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .levelup-banner.show { transform: translate(-50%, -50%) scale(1.1); }
+
+    /* 降ってくるアイテム */
+    .falling-item {
+      position: fixed; top: -50px; z-index: 90;
+      cursor: pointer; animation: fall linear forwards; font-size: 28px;
+    }
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(105vh) rotate(360deg); }
+    }
+
+    /* タップキラキラ */
+    .tap-sparkle {
+      position: fixed; pointer-events: none; z-index: 9999;
+      font-size: 22px; animation: pop 0.6s ease-out forwards;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.3) translate(0,0); opacity: 1; }
+      100% { transform: scale(1.6) translate(var(--tx), var(--ty)); opacity: 0; }
+    }
+
+    .header { padding: 40px 15px 10px; max-width: 450px; margin: 0 auto; cursor: pointer; }
+
+    .title-line {
+      font-family: 'Mochiy Pop P One', sans-serif;
+      font-size: 2.2rem; color: var(--accent-red);
+      text-shadow: 3px 3px 0 #fbc531, 5px 5px 0 var(--text-color);
+      line-height: 1.2; margin: 0;
+    }
+
+    /* ギフトボックス */
+    .gift-box-wrapper { margin-top: 15px; display: inline-block; position: relative; }
+    .gift-box {
+      font-size: 95px; display: inline-block; cursor: pointer;
+      animation: rotateBounce 3s infinite ease-in-out;
+      transition: transform 0.1s;
+    }
+    .gift-box:active { transform: scale(0.85); }
+
+    @keyframes rotateBounce {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      25% { transform: translateY(-10px) rotate(-10deg) scale(1.05); }
+      50% { transform: translateY(0) rotate(180deg) scale(1); }
+      75% { transform: translateY(-10px) rotate(190deg) scale(1.05); }
+      100% { transform: translateY(0) rotate(360deg) scale(1); }
+    }
+
+    /* 動画ボタン */
+    .action-area { margin-top: 20px; padding: 0 20px; }
+    .btn-movie {
+      background: #00cec9; color: white;
+      border: 3.5px solid var(--text-color); padding: 12px 30px;
+      border-radius: 50px; font-family: 'Mochiy Pop P One', sans-serif;
+      cursor: pointer; box-shadow: 0 5px 0 var(--text-color);
+      font-size: 1rem; width: 100%; max-width: 260px;
+    }
+    .btn-movie:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--text-color); }
+
+    /* 🏃‍♂️ 押すたびに逃げていくメッセージボタン */
+    .btn-run-container { margin-top: 25px; height: 60px; position: relative; }
+    .btn-run {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      z-index: 500;
+      background: #a29bfe; color: white;
+      border: 3.5px solid var(--text-color); padding: 10px 20px;
+      border-radius: 50px; font-family: 'Mochiy Pop P One', sans-serif;
+      cursor: pointer; box-shadow: 0 4px 0 var(--text-color);
+      font-size: 0.85rem; transition: left 0.2s ease, top 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-run:active { transform: scale(0.95); }
+
+    /* モーダル共通 */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75); display: flex;
+      justify-content: center; align-items: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      z-index: 1000; padding: 20px;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-card {
+      background: #fff; border: 4px solid var(--text-color);
+      border-radius: 24px; padding: 22px 18px; width: 100%; max-width: 330px;
+      box-shadow: 6px 6px 0 var(--accent-pink);
+      transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.active .modal-card { transform: scale(1); }
+
+    .modal-large-title {
+      font-family: 'Mochiy Pop P One', sans-serif; color: var(--accent-pink);
+      font-size: 1.2rem; margin: 0 0 10px 0; border-bottom: 3px dashed #ebd3a9; padding-bottom: 6px;
+    }
+
+    .modal-card img {
+      width: 100%; height: 180px; object-fit: cover;
+      border: 3px solid var(--text-color); border-radius: 14px; margin-bottom: 10px;
+    }
+
+    /* 📱 9:16（縦型）動画モーダル */
+    #movie-modal .modal-card { max-width: 320px; padding: 16px; }
+    #movie-modal video {
+      width: 100%; height: auto; max-height: 60vh;
+      aspect-ratio: 9 / 16; object-fit: cover;
+      border: 3px solid var(--text-color); border-radius: 16px;
+      margin-bottom: 5px; background: #000;
+    }
+
+    .message-text {
+      text-align: left; line-height: 1.6; font-size: 0.88rem;
+      white-space: pre-wrap; max-height: 180px; overflow-y: auto;
+    }
+
+    .close-btn {
+      margin-top: 15px; background: var(--accent-yellow); color: var(--text-color);
+      border: 3.3px solid var(--text-color); padding: 9px 25px; border-radius: 50px;
+      font-family: 'Mochiy Pop P One', sans-serif; cursor: pointer;
+      box-shadow: 3px 3px 0 var(--text-color); font-size: 0.9rem;
+    }
+
+    /* 写真スライダー */
+    .marquee-section {
+      margin-top: 40px; overflow: hidden; background: #f7e1b5;
+      padding: 18px 0; border-top: 4px dashed var(--text-color); border-bottom: 4px dashed var(--text-color);
+    }
+    .marquee-title { font-family: 'Mochiy Pop P One', sans-serif; font-size: 0.95rem; margin-bottom: 10px; }
+    
+    .marquee-track {
+      display: flex; width: calc(160px * 16);
+      animation: infiniteScroll 22s linear infinite;
+    }
+    @keyframes infiniteScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-160px * 8)); }
+    }
+
+    .photo-card {
+      width: 140px; background: white; padding: 7px 7px 10px 7px;
+      border: 3px solid var(--text-color); box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+      margin: 0 10px; transform: rotate(-2deg); flex-shrink: 0; cursor: pointer;
+    }
+    .photo-card:nth-child(even) { transform: rotate(2deg); }
+    .photo-card img { width: 100%; height: 110px; object-fit: cover; border: 2px solid var(--text-color); border-radius: 4px; }
+    .photo-caption { font-size: 0.75rem; font-weight: 900; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <!-- 🔒 ロック画面 (パスコード: 0909) -->
+  <div id="lock-screen">
+    <div class="lock-title">🔐 PASSCODE</div>
+    <div style="font-size: 0.85rem; font-weight: 900; color: var(--text-color);">パスコードを入力してね！</div>
+    <div class="pass-dots">
+      <div class="dot" id="dot-0"></div>
+      <div class="dot" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+      <div class="dot" id="dot-3"></div>
+    </div>
+    <div class="keypad">
+      <div class="key-btn" onclick="pressKey('1')">1</div>
+      <div class="key-btn" onclick="pressKey('2')">2</div>
+      <div class="key-btn" onclick="pressKey('3')">3</div>
+      <div class="key-btn" onclick="pressKey('4')">4</div>
+      <div class="key-btn" onclick="pressKey('5')">5</div>
+      <div class="key-btn" onclick="pressKey('6')">6</div>
+      <div class="key-btn" onclick="pressKey('7')">7</div>
+      <div class="key-btn" onclick="pressKey('8')">8</div>
+      <div class="key-btn" onclick="pressKey('9')">9</div>
+      <div></div>
+      <div class="key-btn" onclick="pressKey('0')">0</div>
+      <div class="key-btn del-btn" onclick="pressDelete()">⌫</div>
+    </div>
+  </div>
+
+  <!-- 🎮 ゲーミングスコア・レベル表示 -->
+  <div class="score-board">
+    <span class="level-badge" id="level-badge">Lv.1</span>
+    <div><span id="score-val">0</span>pt</div>
+  </div>
+
+  <!-- レベルアップ通知横断幕 -->
+  <div class="levelup-banner" id="levelup-banner">
+    🎉 LEVEL UP!! 🎉<br><span id="levelup-title" style="font-size: 1.1rem; color: #e84118;"></span>
+  </div>
+
+  <!-- ヘッダー -->
+  <div class="header" onclick="countHeaderTap()">
+    <div class="title-line">HAPPY BIRTHDAY</div>
+    <div class="title-line">20th</div>
+    <div class="title-line">YUGA!</div>
+  </div>
+
+  <!-- ギフトボックス -->
+  <div class="gift-box-wrapper">
+    <div class="gift-box" id="gift-element" onclick="openGiftMessage()">🎁</div>
+  </div>
+
+  <!-- 動画ボタン -->
+  <div class="action-area">
+    <button class="btn-movie" onclick="openMovieModal()">🎬 MEMORY 🎬</button>
+  </div>
+
+  <!-- 🏃‍♂️ 押すたびに逃げていくメッセージボタン -->
+  <div class="btn-run-container">
+    <button class="btn-run" id="run-btn" onclick="tapRunButton(event)">押してみて！💨</button>
+  </div>
+
+  <!-- 写真スライダー -->
+  <div class="marquee-section">
+    <div class="marquee-title">📸 MEMORIES 📸</div>
+    <div class="marquee-track">
+      <div class="photo-card" onclick="openPhotoModal('photo1')"><img src="IMG_1287.jpg" alt="1"><div class="photo-caption">#1 思い出1</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo2')"><img src="IMG_1292.jpg" alt="2"><div class="photo-caption">#2 思い出2</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo3')"><img src="IMG_1286.jpg" alt="3"><div class="photo-caption">#3 思い出3</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo4')"><img src="IMG_1300.jpg" alt="4"><div class="photo-caption">#4 思い出4</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo5')"><img src="IMG_1291.jpg" alt="5"><div class="photo-caption">#5 思い出5</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo6')"><img src="IMG_1288.jpg" alt="6"><div class="photo-caption">#6 思い出6</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo7')"><img src="IMG_1289.jpg" alt="7"><div class="photo-caption">#7 思い出7</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo8')"><img src="IMG_1290.jpg" alt="8"><div class="photo-caption">#8 思い出8</div></div>
+
+      <div class="photo-card" onclick="openPhotoModal('photo1')"><img src="IMG_1287.jpg" alt="1"><div class="photo-caption">#1 思い出1</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo2')"><img src="IMG_1292.jpg" alt="2"><div class="photo-caption">#2 思い出2</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo3')"><img src="IMG_1286.jpg" alt="3"><div class="photo-caption">#3 思い出3</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo4')"><img src="IMG_1300.jpg" alt="4"><div class="photo-caption">#4 思い出4</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo5')"><img src="IMG_1291.jpg" alt="5"><div class="photo-caption">#5 思い出5</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo6')"><img src="IMG_1288.jpg" alt="6"><div class="photo-caption">#6 思い出6</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo7')"><img src="IMG_1289.jpg" alt="7"><div class="photo-caption">#7 思い出7</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo8')"><img src="IMG_1290.jpg" alt="8"><div class="photo-caption">#8 思い出8</div></div>
+    </div>
+  </div>
+
+  <!-- ギフトモーダル -->
+  <div class="modal-overlay" id="gift-modal">
+    <div class="modal-card">
+      <div class="modal-large-title">🎉 HAPPY 20th BIRTHDAY 🎉</div>
+      <div class="message-text">
+ゆうが20歳のお誕生日おめでとう！！✨
+
+大人の仲間入りだね🍻
+20代最初の1年が最高に楽しくて素晴らしい年になりますように！
+
+だいぶ初心者だけど頑張って2月からの思い出写真と動画を詰め込んだよ♪
+      </div>
+      <button class="close-btn" onclick="closeModal('gift-modal')">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 動画モーダル（9:16縦型対応） -->
+  <div class="modal-overlay" id="movie-modal">
+    <div class="modal-card">
+      <div class="modal-large-title">🎬 MOVIE 🎬</div>
+      <video id="birthday-video" src="movie.mp4" controls playsinline></video>
+      <button class="close-btn" onclick="closeMovie()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 写真モーダル -->
+  <div class="modal-overlay" id="photo-modal">
+    <div class="modal-card">
+      <div class="modal-large-title" id="modal-photo-title">タイトル</div>
+      <img id="modal-photo-img" src="" alt="写真">
+      <div class="message-text" id="modal-photo-text">文章が入ります</div>
+      <button class="close-btn" onclick="closeModal('photo-modal')">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 汎用ポップアップ -->
+  <div class="modal-overlay" id="secret-modal">
+    <div class="modal-card">
+      <div class="modal-large-title" id="secret-title">SECRET!</div>
+      <div class="message-text" id="secret-text">メッセージ</div>
+      <button class="close-btn" onclick="closeModal('secret-modal')">閉じる</button>
+    </div>
+  </div>
+
+  <script>
+    let enteredPass = "";
+    const correctPass = "0909";
+
+    function pressKey(num) {
+      if (enteredPass.length < 4) {
+        enteredPass += num;
+        updateDots();
+        if (enteredPass.length === 4) {
+          setTimeout(checkPasscode, 200);
+        }
+      }
+    }
+
+    function pressDelete() {
+      if (enteredPass.length > 0) {
+        enteredPass = enteredPass.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (i < enteredPass.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
+      }
+    }
+
+    function checkPasscode() {
+      if (enteredPass === correctPass) {
+        document.getElementById('lock-screen').classList.add('unlocked');
+        fireConfetti();
+        startFallingGame();
+      } else {
+        alert("パスコードが違います！🙅‍♂️");
+        enteredPass = "";
+        updateDots();
+      }
+    }
+
+    let score = 0;
+    let currentLevel = 1;
+
+    // 🎮 レベル設定
+    const levels = [
+      { level: 1, req: 0, title: "Lv.1 ビギナー" },
+      { level: 2, req: 300, title: "Lv.2 見習い主役" },
+      { level: 3, req: 800, title: "Lv.3 パーティーの主役" },
+      { level: 4, req: 1500, title: "Lv.4 無敵のハタチ" },
+      { level: 5, req: 3000, title: "Lv.MAX 伝説の20歳" }
+    ];
+
+    function addScore(pts) {
+      score += pts;
+      document.getElementById('score-val').innerText = score;
+      checkLevelUp();
+    }
+
+    function checkLevelUp() {
+      let nextLevelObj = levels.slice().reverse().find(l => score >= l.req);
+      if (nextLevelObj && nextLevelObj.level > currentLevel) {
+        currentLevel = nextLevelObj.level;
+        document.getElementById('level-badge').innerText = `Lv.${currentLevel === 5 ? 'MAX' : currentLevel}`;
+        
+        // レベルアップ演出
+        const banner = document.getElementById('levelup-banner');
+        document.getElementById('levelup-title').innerText = nextLevelObj.title;
+        banner.classList.add('show');
+        fireConfetti();
+        
+        setTimeout(() => banner.classList.remove('show'), 2000);
+      }
+    }
+
+    /* 🏃‍♂️ 押すたびに逃げていく言葉のリスト */
+    const runMessages = [
+      "おっと！捕まえてみて〜💨","えへ",
+      "20歳おめでと🎉",
+      "いつも幸せをありがとう✨",
+      "20歳最高な年にしようね🎵",
+      "居酒屋デートとかしてみたいね🍻",
+      "楽しいこと沢山計画してくれてありがと💖",
+      "一緒に居られてうれしいです🍀",
+      "やばい！あと1回で捕まっちゃう！"
+    ];
+    let runTapCount = 0;
+
+    function tapRunButton(e) {
+      e.stopPropagation();
+      const btn = document.getElementById('run-btn');
+
+      if (runTapCount < runMessages.length) {
+        // メッセージ変更
+        btn.innerText = runMessages[runTapCount];
+        runTapCount++;
+
+        // 1回タップごとに100ptプレゼント
+        addScore(100);
+        fireConfetti();
+
+        // 画面内のランダムな位置へ逃げる
+        btn.style.position = 'fixed';
+        const maxX = window.innerWidth - btn.offsetWidth - 30;
+        const maxY = window.innerHeight - btn.offsetHeight - 50;
+        
+        const newX = Math.max(20, Math.floor(Math.random() * maxX));
+        const newY = Math.max(60, Math.floor(Math.random() * maxY));
+
+        btn.style.left = newX + 'px';
+        btn.style.top = newY + 'px';
+        btn.style.transform = 'none';
+      } else {
+        // 10回目のタップで完全クリア！
+        fireConfetti();
+        showSecret("🏆 捕獲成功！！", "しつこく追いかけてくれてありがとう笑\n1000pt獲得！20歳の1年が最高の年になりますように！🔥");
+        addScore(1000);
+
+        // ボタンを定位置に戻す
+        btn.style.position = 'absolute';
+        btn.style.left = '50%';
+        btn.style.top = '0';
+        btn.style.transform = 'translateX(-50%)';
+        btn.innerText = "捕獲完了！✨";
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+      }
+    }
+
+    const photoData = {
+      photo1: { title: "📸 MEMORY #1", img: "IMG_1287.jpg", text: "思い出その1！✨" },
+      photo2: { title: "📸 MEMORY #2", img: "IMG_1292.jpg", text: "思い出その2！✨" },
+      photo3: { title: "📸 MEMORY #3", img: "IMG_1286.jpg", text: "思い出その3！✨" },
+      photo4: { title: "📸 MEMORY #4", img: "IMG_1300.jpg", text: "思い出その4！✨" },
+      photo5: { title: "📸 MEMORY #5", img: "IMG_1291.jpg", text: "思い出その5！✨" },
+      photo6: { title: "📸 MEMORY #6", img: "IMG_1288.jpg", text: "思い出その6！✨" },
+      photo7: { title: "📸 MEMORY #7", img: "IMG_1289.jpg", text: "思い出その7！✨" },
+      photo8: { title: "📸 MEMORY #8", img: "IMG_1290.jpg", text: "思い出その8！✨" }
+    };
+
+    window.onload = function() {
+      setupSparkles();
+      setupDoubleTapRainbow();
+      setupGiftLongPress();
+    };
+
+    function setupSparkles() {
+      document.addEventListener('touchstart', function(e) {
+        const touch = e.touches[0];
+        createSparkle(touch.clientX, touch.clientY);
+      });
+    }
+
+    function createSparkle(x, y) {
+      const items = ['✨', '💖', '🎉', '🍰', '🍻', '🌟'];
+      for(let i = 0; i < 4; i++) {
+        const el = document.createElement('div');
+        el.className = 'tap-sparkle';
+        el.innerText = items[Math.floor(Math.random() * items.length)];
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        const tx = (Math.random() - 0.5) * 100 + 'px';
+        const ty = (Math.random() - 0.5) * 100 + 'px';
+        el.style.setProperty('--tx', tx);
+        el.style.setProperty('--ty', ty);
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 600);
+      }
+    }
+
+    function startFallingGame() {
+      const items = [
+        { char: '🍰', pts: 100 },
+        { char: '🍻', pts: 200 },
+        { char: '🎁', pts: 150 },
+        { char: '🎉', pts: 100 },
+        { char: '💎', pts: 1000 }
+      ];
+
+      setInterval(() => {
+        const itemObj = items[Math.floor(Math.random() * items.length)];
+        const el = document.createElement('div');
+        el.className = 'falling-item';
+        el.innerText = itemObj.char;
+        el.style.left = Math.random() * 85 + 5 + 'vw';
+        el.style.animationDuration = (Math.random() * 2 + 3) + 's';
+
+        el.onclick = function(e) {
+          e.stopPropagation();
+          addScore(itemObj.pts);
+          createSparkle(e.clientX, e.clientY);
+          fireConfetti();
+
+          if (itemObj.char === '💎') {
+            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！20歳は超強運な1年になる予感…！！✨");
+          }
+          el.remove();
+        };
+
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }, 600);
+    }
+
+    let headerTap = 0;
+    function countHeaderTap() {
+      headerTap++;
+      if (headerTap === 5) {
+        fireConfetti();
+        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！20代はやりたいこと全部やろうね！🔥");
+        addScore(500);
+        headerTap = 0;
+      }
+    }
+
+    function setupDoubleTapRainbow() {
+      let lastTap = 0;
+      document.body.addEventListener('touchend', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.classList.contains('photo-card') || e.target.classList.contains('gift-box') || e.target.classList.contains('key-btn')) return;
+        
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+          document.body.classList.toggle('rainbow-mode');
+          fireConfetti();
+        }
+        lastTap = currentTime;
+      });
+    }
+
+    function setupGiftLongPress() {
+      const gift = document.getElementById('gift-element');
+      let timer;
+      gift.addEventListener('touchstart', () => {
+        timer = setTimeout(() => {
+          fireConfetti();
+          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！裏メッセージ：いつでも遊びに行こうね！🚗✨");
+          addScore(500);
+        }, 2000);
+      });
+      gift.addEventListener('touchend', () => clearTimeout(timer));
+    }
+
+    function showSecret(title, text) {
+      document.getElementById('secret-title').innerText = title;
+      document.getElementById('secret-text').innerText = text;
+      document.getElementById('secret-modal').classList.add('active');
+    }
+    function openGiftMessage() { fireConfetti(); document.getElementById('gift-modal').classList.add('active'); }
+    function openMovieModal() {
+      document.getElementById('movie-modal').classList.add('active');
+      const v = document.getElementById('birthday-video');
+      if(v) v.play();
+    }
+    function closeMovie() {
+      const v = document.getElementById('birthday-video');
+      if(v) v.pause();
+      closeModal('movie-modal');
+    }
+    function openPhotoModal(key) {
+      const data = photoData[key];
+      if (data) {
+        document.getElementById('modal-photo-title').innerText = data.title;
+        document.getElementById('modal-photo-img').src = data.img;
+        document.getElementById('modal-photo-text').innerText = data.text;
+        document.getElementById('photo-modal').classList.add('active');
+        fireConfetti();
+      }
+    }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    function fireConfetti() {
+      confetti({
+        particleCount: 90, spread: 60, origin: { y: 0.6 },
+        colors: ['#ff85a2', '#fbc531', '#a29bfe', '#fd79a8', '#55efc4', '#ff7675']
+      });
+    }
+  </script>
+</body>
+</html>
