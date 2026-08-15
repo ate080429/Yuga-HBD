@@ -69,6 +69,16 @@
     .key-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--text-color); }
     .key-btn.del-btn { font-size: 0.9rem; background: #ffeaa7; }
 
+    /* レインボーモード */
+    body.rainbow-mode { animation: rainbowBg 2s infinite linear; }
+    @keyframes rainbowBg {
+      0% { background-color: #ffb3ba; }
+      25% { background-color: #bae1ff; }
+      50% { background-color: #baffc9; }
+      75% { background-color: #ffffba; }
+      100% { background-color: #ffb3ba; }
+    }
+
     /* 🎮 ゲーミングスコア・レベルボード */
     .score-board {
       position: fixed; top: 12px; right: 12px;
@@ -86,6 +96,7 @@
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* レベルアップ ポップアップアニメーション */
     .levelup-banner {
       position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0);
       background: #fbc531; border: 4px solid var(--text-color);
@@ -96,6 +107,7 @@
     }
     .levelup-banner.show { transform: translate(-50%, -50%) scale(1.1); }
 
+    /* 降ってくるアイテム */
     .falling-item {
       position: fixed; top: -50px; z-index: 90;
       cursor: pointer; animation: fall linear forwards; font-size: 28px;
@@ -105,6 +117,7 @@
       100% { transform: translateY(105vh) rotate(360deg); }
     }
 
+    /* タップキラキラ */
     .tap-sparkle {
       position: fixed; pointer-events: none; z-index: 9999;
       font-size: 22px; animation: pop 0.6s ease-out forwards;
@@ -115,6 +128,7 @@
     }
 
     .header { padding: 40px 15px 10px; max-width: 450px; margin: 0 auto; cursor: pointer; }
+
     .title-line {
       font-family: 'Mochiy Pop P One', sans-serif;
       font-size: 2.2rem; color: var(--accent-red);
@@ -122,6 +136,7 @@
       line-height: 1.2; margin: 0;
     }
 
+    /* ギフトボックス */
     .gift-box-wrapper { margin-top: 15px; display: inline-block; position: relative; }
     .gift-box {
       font-size: 95px; display: inline-block; cursor: pointer;
@@ -129,6 +144,7 @@
       transition: transform 0.1s;
     }
     .gift-box:active { transform: scale(0.85); }
+
     @keyframes rotateBounce {
       0% { transform: translateY(0) rotate(0deg) scale(1); }
       25% { transform: translateY(-10px) rotate(-10deg) scale(1.05); }
@@ -137,6 +153,7 @@
       100% { transform: translateY(0) rotate(360deg) scale(1); }
     }
 
+    /* 動画ボタン */
     .action-area { margin-top: 20px; padding: 0 20px; }
     .btn-movie {
       background: #00cec9; color: white;
@@ -147,39 +164,19 @@
     }
     .btn-movie:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--text-color); }
 
+    /* 🏃‍♂️ 押すたびに逃げていくメッセージボタン */
     .btn-run-container { margin-top: 25px; height: 60px; position: relative; }
     .btn-run {
       position: absolute; left: 50%; transform: translateX(-50%);
-      z-index: 500; background: #a29bfe; color: white;
+      z-index: 500;
+      background: #a29bfe; color: white;
       border: 3.5px solid var(--text-color); padding: 10px 20px;
       border-radius: 50px; font-family: 'Mochiy Pop P One', sans-serif;
       cursor: pointer; box-shadow: 0 4px 0 var(--text-color);
       font-size: 0.85rem; transition: left 0.2s ease, top 0.2s ease;
       white-space: nowrap;
     }
-
-    /* 📸 写真スライダー */
-    .marquee-section {
-      margin-top: 40px; background: #f7e1b5;
-      padding: 18px 0; border-top: 4px dashed var(--text-color); border-bottom: 4px dashed var(--text-color);
-    }
-    .marquee-title { font-family: 'Mochiy Pop P One', sans-serif; font-size: 0.95rem; margin-bottom: 12px; }
-    
-    .scroll-container {
-      display: flex; overflow-x: auto; scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch; padding: 10px 0;
-      scrollbar-width: none;
-    }
-    .scroll-container::-webkit-scrollbar { display: none; }
-
-    .photo-card {
-      width: 140px; background: white; padding: 7px 7px 10px 7px;
-      border: 3px solid var(--text-color); box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
-      margin: 0 10px; transform: rotate(-2deg); flex-shrink: 0; cursor: pointer; position: relative;
-    }
-    .photo-card:nth-child(even) { transform: rotate(2deg); }
-    .photo-card img { width: 100%; height: 110px; object-fit: cover; border: 2px solid var(--text-color); border-radius: 4px; pointer-events: none; }
-    .photo-caption { font-size: 0.75rem; font-weight: 900; margin-top: 5px; }
+    .btn-run:active { transform: scale(0.95); }
 
     /* モーダル共通 */
     .modal-overlay {
@@ -196,7 +193,6 @@
       border-radius: 24px; padding: 22px 18px; width: 100%; max-width: 330px;
       box-shadow: 6px 6px 0 var(--accent-pink);
       transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
     }
     .modal-overlay.active .modal-card { transform: scale(1); }
 
@@ -205,27 +201,12 @@
       font-size: 1.2rem; margin: 0 0 10px 0; border-bottom: 3px dashed #ebd3a9; padding-bottom: 6px;
     }
 
-    /* 📱 スワイプアルバム */
-    .swipe-album-container {
-      width: 100%; height: 200px;
-      border: 3px solid var(--text-color); border-radius: 14px;
-      overflow: hidden; position: relative; touch-action: pan-y;
-      background: #000;
-    }
-    .swipe-album-img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: opacity 0.2s ease-in-out;
+    .modal-card img {
+      width: 100%; height: 180px; object-fit: cover;
+      border: 3px solid var(--text-color); border-radius: 14px; margin-bottom: 10px;
     }
 
-    .dots-indicator {
-      display: flex; justify-content: center; gap: 6px; margin-top: 8px;
-    }
-    .dots-indicator .dot-item {
-      width: 8px; height: 8px; border-radius: 50%; background: #ccc;
-      transition: background 0.3s, transform 0.3s;
-    }
-    .dots-indicator .dot-item.active { background: var(--accent-pink); width: 10px; height: 10px; }
-
+    /* 📱 9:16（縦型）動画モーダル */
     #movie-modal .modal-card { max-width: 320px; padding: 16px; }
     #movie-modal video {
       width: 100%; height: auto; max-height: 60vh;
@@ -236,7 +217,7 @@
 
     .message-text {
       text-align: left; line-height: 1.6; font-size: 0.88rem;
-      white-space: pre-wrap; max-height: 140px; overflow-y: auto; margin-top: 10px;
+      white-space: pre-wrap; max-height: 180px; overflow-y: auto;
     }
 
     .close-btn {
@@ -245,11 +226,36 @@
       font-family: 'Mochiy Pop P One', sans-serif; cursor: pointer;
       box-shadow: 3px 3px 0 var(--text-color); font-size: 0.9rem;
     }
+
+    /* 写真スライダー */
+    .marquee-section {
+      margin-top: 40px; overflow: hidden; background: #f7e1b5;
+      padding: 18px 0; border-top: 4px dashed var(--text-color); border-bottom: 4px dashed var(--text-color);
+    }
+    .marquee-title { font-family: 'Mochiy Pop P One', sans-serif; font-size: 0.95rem; margin-bottom: 10px; }
+    
+    .marquee-track {
+      display: flex; width: calc(160px * 16);
+      animation: infiniteScroll 22s linear infinite;
+    }
+    @keyframes infiniteScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-160px * 8)); }
+    }
+
+    .photo-card {
+      width: 140px; background: white; padding: 7px 7px 10px 7px;
+      border: 3px solid var(--text-color); box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+      margin: 0 10px; transform: rotate(-2deg); flex-shrink: 0; cursor: pointer;
+    }
+    .photo-card:nth-child(even) { transform: rotate(2deg); }
+    .photo-card img { width: 100%; height: 110px; object-fit: cover; border: 2px solid var(--text-color); border-radius: 4px; }
+    .photo-caption { font-size: 0.75rem; font-weight: 900; margin-top: 5px; }
   </style>
 </head>
 <body>
 
-  <!-- 🔒 ロック画面 (0909) -->
+  <!-- 🔒 ロック画面 (パスコード: 0909) -->
   <div id="lock-screen">
     <div class="lock-title">🔐 PASSCODE</div>
     <div style="font-size: 0.85rem; font-weight: 900; color: var(--text-color);">パスコードを入力してね！</div>
@@ -271,16 +277,17 @@
       <div class="key-btn" onclick="pressKey('9')">9</div>
       <div></div>
       <div class="key-btn" onclick="pressKey('0')">0</div>
-      <div class="key-btn del-btn" onclick="pressDelete()">⌫</div>
+      <div class="key-btn del-btn" onclick="pressDelete()">✖︎</div>
     </div>
   </div>
 
-  <!-- 🎮 ゲーミングスコア -->
+  <!-- 🎮 ゲーミングスコア・レベル表示 -->
   <div class="score-board">
     <span class="level-badge" id="level-badge">Lv.1</span>
     <div><span id="score-val">0</span>pt</div>
   </div>
 
+  <!-- レベルアップ通知横断幕 -->
   <div class="levelup-banner" id="levelup-banner">
     🎉 LEVEL UP!! 🎉<br><span id="levelup-title" style="font-size: 1.1rem; color: #e84118;"></span>
   </div>
@@ -299,26 +306,35 @@
 
   <!-- 動画ボタン -->
   <div class="action-area">
-    <button class="btn-movie" onclick="openMovieModal()">🎬 MEMORY MOVIEを見る</button>
+    <button class="btn-movie" onclick="openMovieModal()">🎬 MOVIE 🎬</button>
   </div>
 
-  <!-- 🏃‍♂️ 逃げるメッセージボタン -->
+  <!-- 🏃‍♂️ 押すたびに逃げていくメッセージボタン -->
   <div class="btn-run-container">
     <button class="btn-run" id="run-btn" onclick="tapRunButton(event)">押してみて！💨</button>
   </div>
 
   <!-- 写真スライダー -->
   <div class="marquee-section">
-    <div class="marquee-title">📸 MEMORIES (タップ＆スワイプしてみてね) 📸</div>
-    <div class="scroll-container" id="scroll-box">
-      <div class="photo-card" onclick="openPhotoModal('photo1')"><img src="IMG_1287.jpg" alt="1"><div class="photo-caption">#1 お出かけ</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo2')"><img src="IMG_1292.jpg" alt="2"><div class="photo-caption">#2 ご飯</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo3')"><img src="IMG_1286.jpg" alt="3"><div class="photo-caption">#3 爆笑ショット</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo4')"><img src="IMG_1300.jpg" alt="4"><div class="photo-caption">#4 記念写真</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo5')"><img src="IMG_1291.jpg" alt="5"><div class="photo-caption">#5 日常</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo6')"><img src="IMG_1288.jpg" alt="6"><div class="photo-caption">#6 ドライブ</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo7')"><img src="IMG_1289.jpg" alt="7"><div class="photo-caption">#7 イベント</div></div>
-      <div class="photo-card" onclick="openPhotoModal('photo8')"><img src="IMG_1290.jpg" alt="8"><div class="photo-caption">#8 ベストショット</div></div>
+    <div class="marquee-title">📸 MEMORIES 📸</div>
+    <div class="marquee-track">
+      <div class="photo-card" onclick="openPhotoModal('photo1')"><img src="IMG_1287.jpg" alt="1"><div class="photo-caption">#1 思い出1</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo2')"><img src="IMG_1292.jpg" alt="2"><div class="photo-caption">#2 思い出2</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo3')"><img src="IMG_1286.jpg" alt="3"><div class="photo-caption">#3 思い出3</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo4')"><img src="IMG_1300.jpg" alt="4"><div class="photo-caption">#4 思い出4</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo5')"><img src="IMG_1291.jpg" alt="5"><div class="photo-caption">#5 思い出5</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo6')"><img src="IMG_1288.jpg" alt="6"><div class="photo-caption">#6 思い出6</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo7')"><img src="IMG_1289.jpg" alt="7"><div class="photo-caption">#7 思い出7</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo8')"><img src="IMG_1290.jpg" alt="8"><div class="photo-caption">#8 思い出8</div></div>
+
+      <div class="photo-card" onclick="openPhotoModal('photo1')"><img src="IMG_1287.jpg" alt="1"><div class="photo-caption">#1 思い出1</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo2')"><img src="IMG_1292.jpg" alt="2"><div class="photo-caption">#2 思い出2</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo3')"><img src="IMG_1286.jpg" alt="3"><div class="photo-caption">#3 思い出3</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo4')"><img src="IMG_1300.jpg" alt="4"><div class="photo-caption">#4 思い出4</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo5')"><img src="IMG_1291.jpg" alt="5"><div class="photo-caption">#5 思い出5</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo6')"><img src="IMG_1288.jpg" alt="6"><div class="photo-caption">#6 思い出6</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo7')"><img src="IMG_1289.jpg" alt="7"><div class="photo-caption">#7 思い出7</div></div>
+      <div class="photo-card" onclick="openPhotoModal('photo8')"><img src="IMG_1290.jpg" alt="8"><div class="photo-caption">#8 思い出8</div></div>
     </div>
   </div>
 
@@ -327,21 +343,21 @@
     <div class="modal-card">
       <div class="modal-large-title">🎉 HAPPY 20th BIRTHDAY 🎉</div>
       <div class="message-text">
-ゆうが、20歳のお誕生日おめでとう！！✨
+ゆうが20歳のお誕生日おめでとう！！✨
 
-ついにハタチの仲間入りだね🍻
+大人の仲間入りだね🍻
 20代最初の1年が最高に楽しくて素晴らしい年になりますように！
 
-今日はお祝いを込めて、思い出のアルバムと動画を詰め込んだよ♪
+だいぶ初心者だけど頑張って2月からの思い出写真と動画を詰め込んだよ♪
       </div>
       <button class="close-btn" onclick="closeModal('gift-modal')">閉じる</button>
     </div>
   </div>
 
-  <!-- 動画モーダル -->
+  <!-- 動画モーダル（9:16縦型対応） -->
   <div class="modal-overlay" id="movie-modal">
     <div class="modal-card">
-      <div class="modal-large-title">🎬 MEMORY MOVIE</div>
+      <div class="modal-large-title">🎬 MOVIE 🎬</div>
       <video id="birthday-video" src="movie.mp4" controls playsinline></video>
       <button class="close-btn" onclick="closeMovie()">閉じる</button>
     </div>
@@ -351,20 +367,13 @@
   <div class="modal-overlay" id="photo-modal">
     <div class="modal-card">
       <div class="modal-large-title" id="modal-photo-title">タイトル</div>
-      
-      <!-- 写真エリア -->
-      <div class="swipe-album-container" id="swipe-box">
-        <img class="swipe-album-img" id="modal-photo-img" src="" alt="写真">
-      </div>
-      <div class="dots-indicator" id="dots-box"></div>
-
-      <!-- 写真ごとに切り替わるエピソード本文 -->
-      <div class="message-text" id="modal-photo-text">エピソードが入ります</div>
+      <img id="modal-photo-img" src="" alt="写真">
+      <div class="message-text" id="modal-photo-text">文章が入ります</div>
       <button class="close-btn" onclick="closeModal('photo-modal')">閉じる</button>
     </div>
   </div>
 
-  <!-- シークレットモーダル -->
+  <!-- 汎用ポップアップ -->
   <div class="modal-overlay" id="secret-modal">
     <div class="modal-card">
       <div class="modal-large-title" id="secret-title">SECRET!</div>
@@ -381,28 +390,35 @@
       if (enteredPass.length < 4) {
         enteredPass += num;
         updateDots();
-        if (enteredPass.length === 4) setTimeout(checkPasscode, 200);
+        if (enteredPass.length === 4) {
+          setTimeout(checkPasscode, 200);
+        }
       }
     }
+
     function pressDelete() {
       if (enteredPass.length > 0) {
         enteredPass = enteredPass.slice(0, -1);
         updateDots();
       }
     }
+
     function updateDots() {
       for (let i = 0; i < 4; i++) {
         const dot = document.getElementById(`dot-${i}`);
-        if (i < enteredPass.length) dot.classList.add('filled');
-        else dot.classList.remove('filled');
+        if (i < enteredPass.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
       }
     }
+
     function checkPasscode() {
       if (enteredPass === correctPass) {
         document.getElementById('lock-screen').classList.add('unlocked');
         fireConfetti();
         startFallingGame();
-        startAutoScroll();
       } else {
         alert("パスコードが違います！🙅‍♂️");
         enteredPass = "";
@@ -412,12 +428,14 @@
 
     let score = 0;
     let currentLevel = 1;
+
+    // 🎮 レベル設定
     const levels = [
-      { level: 1, req: 0, title: "Lv.1 ビギナー" },
-      { level: 2, req: 300, title: "Lv.2 見習い主役" },
-      { level: 3, req: 800, title: "Lv.3 パーティーの主役" },
-      { level: 4, req: 1500, title: "Lv.4 無敵のハタチ" },
-      { level: 5, req: 3000, title: "Lv.MAX 伝説の20歳" }
+      { level: 1, req: 100, title: "Lv.1 ビギナー" },
+      { level: 2, req: 500, title: "Lv.2 見習い主役" },
+      { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
+      { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
+      { level: 5, req: 5000, title: "Lv.MAX 伝説の20歳" }
     ];
 
     function addScore(pts) {
@@ -431,209 +449,87 @@
       if (nextLevelObj && nextLevelObj.level > currentLevel) {
         currentLevel = nextLevelObj.level;
         document.getElementById('level-badge').innerText = `Lv.${currentLevel === 5 ? 'MAX' : currentLevel}`;
+        
+        // レベルアップ演出
         const banner = document.getElementById('levelup-banner');
         document.getElementById('levelup-title').innerText = nextLevelObj.title;
         banner.classList.add('show');
         fireConfetti();
+        
         setTimeout(() => banner.classList.remove('show'), 2000);
       }
     }
 
-    /* 🏃‍♂️ 逃げるメッセージ */
+    /* 🏃‍♂️ 押すたびに逃げていく言葉のリスト */
     const runMessages = [
-      "おっと！捕まえてみて〜💨",
-      "まだまだ！素早さ100だよ⚡️",
-      "実は20歳おめでとう！！🎉",
-      "追いつけるかな〜？😜",
-      "いつも本当にありがとう！✨",
-      "ハタチも最高の年にしようね🍻",
-      "また一緒にお酒飲みに行こう！🍶",
-      "うわっ！かなり追いついてきた…💦",
-      "やばい！あと1回で捕まっちゃう！😱"
+      "おっと！捕まえてみて〜💨","えへ",
+      "20歳おめでと🎉",
+      "いつも幸せをありがとう✨",
+      "20歳最高な年にしようね🎵",
+      "居酒屋デートとかしてみたいね🍻",
+      "楽しいこと沢山計画してくれてありがと💖",
+      "一緒に居られてうれしいです🍀",
+      "やばい！あと1回で捕まっちゃう！"
     ];
     let runTapCount = 0;
 
     function tapRunButton(e) {
       e.stopPropagation();
       const btn = document.getElementById('run-btn');
+
       if (runTapCount < runMessages.length) {
+        // メッセージ変更
         btn.innerText = runMessages[runTapCount];
         runTapCount++;
+
+        // 1回タップごとに100ptプレゼント
         addScore(100);
         fireConfetti();
+
+        // 画面内のランダムな位置へ逃げる
         btn.style.position = 'fixed';
         const maxX = window.innerWidth - btn.offsetWidth - 30;
         const maxY = window.innerHeight - btn.offsetHeight - 50;
-        btn.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
-        btn.style.top = Math.max(60, Math.floor(Math.random() * maxY)) + 'px';
+        
+        const newX = Math.max(20, Math.floor(Math.random() * maxX));
+        const newY = Math.max(60, Math.floor(Math.random() * maxY));
+
+        btn.style.left = newX + 'px';
+        btn.style.top = newY + 'px';
         btn.style.transform = 'none';
       } else {
+        // 10回目のタップで完全クリア！
         fireConfetti();
-        showSecret("🏆 捕獲成功！！", "しつこく追いかけてくれてありがとう！笑\n1000pt獲得！20歳の1年が最高の年になりますように！🔥");
+        showSecret("🏆 捕獲成功！！", "しつこく追いかけてくれてありがとう笑\n1000pt獲得！20歳の1年が最高の年になりますように！🔥");
         addScore(1000);
+
+        // ボタンを定位置に戻す
         btn.style.position = 'absolute';
-        btn.style.left = '50%'; btn.style.top = '0';
+        btn.style.left = '50%';
+        btn.style.top = '0';
         btn.style.transform = 'translateX(-50%)';
         btn.innerText = "捕獲完了！✨";
-        btn.disabled = true; btn.style.opacity = '0.7';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
       }
     }
 
-    /* 📸 写真＋スワイプ用シークレット写真・エピソードデータ */
     const photoData = {
-      photo1: { 
-        title: "📸 MEMORY #1", 
-        items: [
-          { img: "IMG_1287.jpg", text: "遊びに行った時の写真！めちゃくちゃ楽しかったね✨" }, 
-          { img: "IMG_1292.jpg", text: "👈 スワイプ発見！実はこの時、爆笑しすぎてお腹痛かったやつ！笑" }, 
-          { img: "IMG_1286.jpg", text: "さらにスワイプ！これも思い出の1枚✨" } 
-        ]
-      },
-      photo2: { 
-        title: "📸 MEMORY #2", 
-        items: [
-          { img: "IMG_1292.jpg", text: "一緒に美味しいご飯を食べに行った時の写真！🍚" },
-          { img: "IMG_1300.jpg", text: "👈 裏写真！また美味しいお店開拓しようね🍻" }
-        ]
-      },
-      photo3: { 
-        title: "📸 MEMORY #3", 
-        items: [
-          { img: "IMG_1286.jpg", text: "お気に入りのショット！良い表情してるね😎" },
-          { img: "IMG_1291.jpg", text: "👈 スワイプ！別角度のオフショット発見📸" }
-        ] 
-      },
-      photo4: { 
-        title: "📸 MEMORY #4", 
-        items: [
-          { img: "IMG_1300.jpg", text: "思い出の写真その4！✨" },
-          { img: "IMG_1288.jpg", text: "👈 シークレット写真！いつも楽しい時間をありがとう！" }
-        ] 
-      },
-      photo5: { 
-        title: "📸 MEMORY #5", 
-        items: [
-          { img: "IMG_1291.jpg", text: "ふとした日常の1枚！こういう何気ない時が一番楽しかったりするよね✨" }
-        ] 
-      },
-      photo6: { 
-        title: "📸 MEMORY #6", 
-        items: [
-          { img: "IMG_1288.jpg", text: "思い出のドライブ写真🚗" },
-          { img: "IMG_1289.jpg", text: "👈 隠し写真！ハタチになったしドライブ旅も行きたいね！" }
-        ] 
-      },
-      photo7: { 
-        title: "📸 MEMORY #7", 
-        items: [
-          { img: "IMG_1289.jpg", text: "イベントの時の写真🎉" }
-        ] 
-      },
-      photo8: { 
-        title: "📸 MEMORY #8", 
-        items: [
-          { img: "IMG_1290.jpg", text: "ベストショット！最高にキマッてる✨" },
-          { img: "IMG_1287.jpg", text: "👈 最後のシークレット！最高の20歳にしてね！！" }
-        ] 
-      }
+      photo1: { title: "📸 MEMORY #1", img: "IMG_1287.jpg", text: "思い出その1！✨" },
+      photo2: { title: "📸 MEMORY #2", img: "IMG_1292.jpg", text: "思い出その2！✨" },
+      photo3: { title: "📸 MEMORY #3", img: "IMG_1286.jpg", text: "思い出その3！✨" },
+      photo4: { title: "📸 MEMORY #4", img: "IMG_1300.jpg", text: "思い出その4！✨" },
+      photo5: { title: "📸 MEMORY #5", img: "IMG_1291.jpg", text: "思い出その5！✨" },
+      photo6: { title: "📸 MEMORY #6", img: "IMG_1288.jpg", text: "思い出その6！✨" },
+      photo7: { title: "📸 MEMORY #7", img: "IMG_1289.jpg", text: "思い出その7！✨" },
+      photo8: { title: "📸 MEMORY #8", img: "IMG_1290.jpg", text: "思い出その8！✨" }
     };
 
-    let currentPhotoItems = [];
-    let currentPhotoIndex = 0;
-    let baseTitle = "";
-    let swipeFoundSecret = false;
-
-    function openPhotoModal(key) {
-      const data = photoData[key];
-      if (data) {
-        baseTitle = data.title;
-        currentPhotoItems = data.items;
-        currentPhotoIndex = 0;
-        updateSwipeDisplay();
-        document.getElementById('photo-modal').classList.add('active');
-        fireConfetti();
-      }
-    }
-
-    function updateSwipeDisplay() {
-      const currentObj = currentPhotoItems[currentPhotoIndex];
-      const img = document.getElementById('modal-photo-img');
-      const textEl = document.getElementById('modal-photo-text');
-      const titleEl = document.getElementById('modal-photo-title');
-
-      img.src = currentObj.img;
-      textEl.innerText = currentObj.text;
-      titleEl.innerText = baseTitle;
-
-      // ドットの更新
-      const dotsBox = document.getElementById('dots-box');
-      dotsBox.innerHTML = '';
-      if (currentPhotoItems.length > 1) {
-        for (let i = 0; i < currentPhotoItems.length; i++) {
-          const dot = document.createElement('div');
-          dot.className = `dot-item ${i === currentPhotoIndex ? 'active' : ''}`;
-          dotsBox.appendChild(dot);
-        }
-      }
-    }
-
-    /* 👈👉 タッチスワイプ検知 */
-    let touchStartX = 0;
-    let touchEndX = 0;
-    const swipeBox = document.getElementById('swipe-box');
-
-    swipeBox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, false);
-    swipeBox.addEventListener('touchend', e => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, false);
-
-    function handleSwipe() {
-      if (currentPhotoItems.length <= 1) return;
-      const threshold = 35;
-      if (touchStartX - touchEndX > threshold) {
-        // 左スワイプ ➔ 次の写真＆テキストへ
-        if (currentPhotoIndex < currentPhotoItems.length - 1) {
-          currentPhotoIndex++;
-          updateSwipeDisplay();
-          triggerSecretSwipeBonus();
-        }
-      } else if (touchEndX - touchStartX > threshold) {
-        // 右スワイプ ➔ 前の写真＆テキストへ
-        if (currentPhotoIndex > 0) {
-          currentPhotoIndex--;
-          updateSwipeDisplay();
-        }
-      }
-    }
-
-    function triggerSecretSwipeBonus() {
-      if (!swipeFoundSecret) {
-        swipeFoundSecret = true;
-        fireConfetti();
-        addScore(300);
-      }
-    }
-
-    /* 🔄 スライダー自動スクロール */
-    let autoScrollInterval;
-    let isUserTouching = false;
-    function startAutoScroll() {
-      const scrollBox = document.getElementById('scroll-box');
-      autoScrollInterval = setInterval(() => {
-        if (!isUserTouching) {
-          scrollBox.scrollLeft += 1.2;
-          if (scrollBox.scrollLeft >= scrollBox.scrollWidth - scrollBox.clientWidth - 5) {
-            scrollBox.scrollLeft = 0;
-          }
-        }
-      }, 20);
-
-      scrollBox.addEventListener('touchstart', () => { isUserTouching = true; });
-      scrollBox.addEventListener('touchend', () => { setTimeout(() => isUserTouching = false, 2000); });
-    }
-
-    window.onload = function() { setupSparkles(); };
+    window.onload = function() {
+      setupSparkles();
+      setupDoubleTapRainbow();
+      setupGiftLongPress();
+    };
 
     function setupSparkles() {
       document.addEventListener('touchstart', function(e) {
@@ -681,8 +577,9 @@
           addScore(itemObj.pts);
           createSparkle(e.clientX, e.clientY);
           fireConfetti();
+
           if (itemObj.char === '💎') {
-            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！20歳は超強運な1年になる予感…！！✨");
+            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
           }
           el.remove();
         };
@@ -697,10 +594,38 @@
       headerTap++;
       if (headerTap === 5) {
         fireConfetti();
-        showSecret("🕵️‍♀️ シークレット1解放！", "タイトル連打発見！+500ptゲット！20代はやりたいこと全部やろうね！🔥");
+        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！\n20代はやりたいこと全部やろうね！🔥");
         addScore(500);
         headerTap = 0;
       }
+    }
+
+    function setupDoubleTapRainbow() {
+      let lastTap = 0;
+      document.body.addEventListener('touchend', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.classList.contains('photo-card') || e.target.classList.contains('gift-box') || e.target.classList.contains('key-btn')) return;
+        
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+          document.body.classList.toggle('rainbow-mode');
+          fireConfetti();
+        }
+        lastTap = currentTime;
+      });
+    }
+
+    function setupGiftLongPress() {
+      const gift = document.getElementById('gift-element');
+      let timer;
+      gift.addEventListener('touchstart', () => {
+        timer = setTimeout(() => {
+          fireConfetti();
+          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！\n沢山遊びに行こうね！🚗✨");
+          addScore(500);
+        }, 2000);
+      });
+      gift.addEventListener('touchend', () => clearTimeout(timer));
     }
 
     function showSecret(title, text) {
@@ -718,6 +643,16 @@
       const v = document.getElementById('birthday-video');
       if(v) v.pause();
       closeModal('movie-modal');
+    }
+    function openPhotoModal(key) {
+      const data = photoData[key];
+      if (data) {
+        document.getElementById('modal-photo-title').innerText = data.title;
+        document.getElementById('modal-photo-img').src = data.img;
+        document.getElementById('modal-photo-text').innerText = data.text;
+        document.getElementById('photo-modal').classList.add('active');
+        fireConfetti();
+      }
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function fireConfetti() {
