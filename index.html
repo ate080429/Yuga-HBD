@@ -431,11 +431,11 @@
 
     // 🎮 レベル設定
     const levels = [
-      { level: 1, req: 0, title: "Lv.1 ビギナー" },
-      { level: 2, req: 300, title: "Lv.2 見習い主役" },
-      { level: 3, req: 800, title: "Lv.3 パーティーの主役" },
-      { level: 4, req: 1500, title: "Lv.4 無敵のハタチ" },
-      { level: 5, req: 3000, title: "Lv.MAX 伝説の20歳" }
+      { level: 1, req: 100, title: "Lv.1 ビギナー" },
+      { level: 2, req: 500, title: "Lv.2 見習い主役" },
+      { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
+      { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
+      { level: 5, req: 5000, title: "Lv.MAX 伝説の20歳" }
     ];
 
     function addScore(pts) {
@@ -579,7 +579,7 @@
           fireConfetti();
 
           if (itemObj.char === '💎') {
-            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！20歳は超強運な1年になる予感…！！✨");
+            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！","20歳は超強運な1年になる予感…！！✨");
           }
           el.remove();
         };
@@ -594,7 +594,7 @@
       headerTap++;
       if (headerTap === 5) {
         fireConfetti();
-        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！20代はやりたいこと全部やろうね！🔥");
+        showSecret("🕵️‍♀️ シークレット解放！", "タイトル連打発見！+500ptゲット！","20代はやりたいこと全部やろうね！🔥");
         addScore(500);
         headerTap = 0;
       }
@@ -621,7 +621,7 @@
       gift.addEventListener('touchstart', () => {
         timer = setTimeout(() => {
           fireConfetti();
-          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！裏メッセージ：いつでも遊びに行こうね！🚗✨");
+          showSecret("🕵️‍♀️ シークレット解放！", "ギフト長押し発見！+500pt獲得！","沢山遊びに行こうね！🚗✨");
           addScore(500);
         }, 2000);
       });
