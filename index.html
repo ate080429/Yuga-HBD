@@ -429,27 +429,48 @@
     let score = 0;
     let currentLevel = 1;
 
-    // 🎮 レベル設定
-    const levels = [
-      { level: 1, req: 100, title: "Lv.1 ビギナー" },
-      { level: 2, req: 500, title: "Lv.2 見習い主役" },
-      { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
-      { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
-      { level: 5, req: 5000, title: "Lv.MAX 伝説の20歳" }
-    ];
+ // 🎮 レベル設定
+const levels = [
+  { level: 1, req: 100, title: "Lv.1 ビギナー" },
+  { level: 2, req: 500, title: "Lv.2 見習い主役" },
+  { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
+  { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
+  { level: 5, req: 5000, title: "Lv.5 伝説の20歳" },
+  { level: 6, req: 10000, title: "Lv.SECRET 宇宙一の彼氏" } // 👈 10,000ptのシークレットを追加！
+];
 
-    function addScore(pts) {
-      score += pts;
-      document.getElementById('score-val').innerText = score;
-      checkLevelUp();
+function addScore(pts) {
+  score += pts;
+  document.getElementById('score-val').innerText = score;
+  checkLevelUp();
+}
+
+function checkLevelUp() {
+  let nextLevelObj = levels.slice().reverse().find(l => score >= l.req);
+  if (nextLevelObj && nextLevelObj.level > currentLevel) {
+    currentLevel = nextLevelObj.level;
+    
+    // バッジ表示の切り替え（レベル6ならSECRET表記、それ以外は通常）
+    let badgeText = `Lv.${currentLevel}`;
+    if (currentLevel === 5) badgeText = "Lv.MAX";
+    if (currentLevel === 6) badgeText = "Lv.SECRET";
+    
+    document.getElementById('level-badge').innerText = badgeText;
+    
+    // レベルアップ演出
+    const banner = document.getElementById('levelup-banner');
+    document.getElementById('levelup-title').innerText = nextLevelObj.title;
+    banner.classList.add('show');
+    
+    // シークレット到達時は紙吹雪をド派手（2回発射など）にする演出もおすすめ！
+    fireConfetti();
+    if (currentLevel === 6) {
+      setTimeout(() => fireConfetti(), 500); 
     }
-
-    function checkLevelUp() {
-      let nextLevelObj = levels.slice().reverse().find(l => score >= l.req);
-      if (nextLevelObj && nextLevelObj.level > currentLevel) {
-        currentLevel = nextLevelObj.level;
-        document.getElementById('level-badge').innerText = `Lv.${currentLevel === 5 ? 'MAX' : currentLevel}`;
-        
+    
+    setTimeout(() => banner.classList.remove('show'), 2000);
+  }
+}
         // レベルアップ演出
         const banner = document.getElementById('levelup-banner');
         document.getElementById('levelup-title').innerText = nextLevelObj.title;
