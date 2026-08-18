@@ -35,11 +35,20 @@
     }
 
     /* 🔒 パスコードロック画面 */
+   /* 🔒 パスコードロック画面（透けない・絶対に手前に来る設定） */
     #lock-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-color);
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      z-index: 1000000; transition: opacity 0.5s ease, visibility 0.5s;
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100vw; 
+      height: 100vh;
+      background-color: #fdf6e2; /* 背景色を完全に塗りつぶして下を見えなくする */
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;
+      z-index: 999999; /* 絶対に一番手前に持ってくる */
+      transition: opacity 0.5s ease, visibility 0.5s;
     }
     #lock-screen.unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
 
