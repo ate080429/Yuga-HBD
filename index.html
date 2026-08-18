@@ -239,8 +239,11 @@
       box-shadow: 3px 3px 0 var(--text-color); font-size: 0.9rem;
     }
 
-    /* 写真スライダー */
+    
+   /* 写真スライダー */
     .marquee-section {
+      position: relative; /* 重なり順を制御できるように追加 */
+      z-index: 1; /* ロック画面より確実に後ろに配置 */
       margin-top: 40px; overflow: hidden; background: #f7e1b5;
       padding: 18px 0; border-top: 4px dashed var(--text-color); border-bottom: 4px dashed var(--text-color);
     }
