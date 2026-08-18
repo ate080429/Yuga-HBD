@@ -429,58 +429,48 @@
     let score = 0;
     let currentLevel = 0;
 
- // 🎮 レベル設定（currentLevel の初期値定義も確認してください！）
+    const levels = [
+      { level: 1, req: 100, title: "Lv.1 ビギナー" },
+      { level: 2, req: 500, title: "Lv.2 見習い主役" },
+      { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
+      { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
+      { level: 5, req: 5000, title: "Lv.5 伝説の20歳" },
+      { level: 6, req: 10000, title: "Lv.SECRET 宇宙一の彼氏" }
+    ];
 
+    function addScore(pts) {
+      score += pts;
+      document.getElementById('score-val').innerText = score;
+      checkLevelUp();
+    }
 
-const levels = [
-  { level: 1, req: 100, title: "Lv.1 ビギナー" },
-  { level: 2, req: 500, title: "Lv.2 見習い主役" },
-  { level: 3, req: 1000, title: "Lv.3 パーティーの主役" },
-  { level: 4, req: 3000, title: "Lv.4 無敵のハタチ" },
-  { level: 5, req: 5000, title: "Lv.5 伝説の20歳" },
-  { level: 6, req: 10000, title: "Lv.SECRET 宇宙一の彼氏" }
-];
+    function checkLevelUp() {
+      let nextLevelObj = levels.slice().reverse().find(l => score >= l.req);
 
-function addScore(pts) {
-  score += pts;
-  document.getElementById('score-val').innerText = score;
-  checkLevelUp();
-}
-
-function checkLevelUp() {
-  // スコアを満たしている最大のレベルを探す
-  let nextLevelObj = levels.slice().reverse().find(l => score >= l.req);
-
-  // 現在のレベルより高いレベルが見つかったらレベルアップ！
-  if (nextLevelObj && nextLevelObj.level > currentLevel) {
-    currentLevel = nextLevelObj.level;
-    
-    // バッジのテキスト決定
-    let badgeText = `Lv.${currentLevel}`;
-    if (currentLevel === 5) badgeText = "Lv.MAX";
-    if (currentLevel === 6) badgeText = "Lv.SECRET"; // 👈 レベル6でSECRET表示
-    
-    document.getElementById('level-badge').innerText = badgeText;
-    
-    // バナー演出
-    const banner = document.getElementById('levelup-banner');
-    document.getElementById('levelup-title').innerText = nextLevelObj.title;
-    banner.classList.add('show');
-    
-    // 紙吹雪（シークレットならド派手に！）
-    if (typeof fireConfetti === 'function') {
-      fireConfetti();
-      if (currentLevel === 6) {
-        setTimeout(() => fireConfetti(), 500); 
+      if (nextLevelObj && nextLevelObj.level > currentLevel) {
+        currentLevel = nextLevelObj.level;
+        
+        let badgeText = `Lv.${currentLevel}`;
+        if (currentLevel === 5) badgeText = "Lv.MAX";
+        if (currentLevel === 6) badgeText = "Lv.SECRET";
+        
+        document.getElementById('level-badge').innerText = badgeText;
+        
+        const banner = document.getElementById('levelup-banner');
+        document.getElementById('levelup-title').innerText = nextLevelObj.title;
+        banner.classList.add('show');
+        
+        if (typeof fireConfetti === 'function') {
+          fireConfetti();
+          if (currentLevel === 6) {
+            setTimeout(() => fireConfetti(), 500); 
+          }
+        }
+        
+        setTimeout(() => banner.classList.remove('show'), 2000);
       }
     }
-    
-    setTimeout(() => banner.classList.remove('show'), 2000);
-  }
-}
-  
 
-    /* 🏃‍♂️ 押すたびに逃げていく言葉のリスト */
     const runMessages = [
       "おっと！捕まえてみて〜💨","えへ",
       "20歳おめでと🎉",
@@ -498,15 +488,12 @@ function checkLevelUp() {
       const btn = document.getElementById('run-btn');
 
       if (runTapCount < runMessages.length) {
-        // メッセージ変更
         btn.innerText = runMessages[runTapCount];
         runTapCount++;
 
-        // 1回タップごとに100ptプレゼント
         addScore(100);
         fireConfetti();
 
-        // 画面内のランダムな位置へ逃げる
         btn.style.position = 'fixed';
         const maxX = window.innerWidth - btn.offsetWidth - 30;
         const maxY = window.innerHeight - btn.offsetHeight - 50;
@@ -518,12 +505,10 @@ function checkLevelUp() {
         btn.style.top = newY + 'px';
         btn.style.transform = 'none';
       } else {
-        // 10回目のタップで完全クリア！
         fireConfetti();
         showSecret("🏆 捕獲成功！！", "しつこく追いかけてくれてありがとう笑\n1000pt獲得！20歳の1年が最高の年になりますように！🔥");
         addScore(1000);
 
-        // ボタンを定位置に戻す
         btn.style.position = 'absolute';
         btn.style.left = '50%';
         btn.style.top = '0';
@@ -534,8 +519,7 @@ function checkLevelUp() {
       }
     }
 
-
-      // 📸 8つのグループとそれぞれの写真・コメントリスト
+    /* 📸 写真グループデータ */
     const photoGroups = {
       photo1: [
         { title: "📸 MEMORY #1 (1/2)", img: "IMG_1313.jpeg", text: "ここに1-1のコメント" },
@@ -616,7 +600,6 @@ function checkLevelUp() {
       updatePhotoModal();
     }
 
-    // 🕵️‍♀️ 隠しスワイプ操作
     let touchStartX = 0;
     let touchEndX = 0;
 
@@ -754,16 +737,6 @@ function checkLevelUp() {
       const v = document.getElementById('birthday-video');
       if(v) v.pause();
       closeModal('movie-modal');
-    }
-    function openPhotoModal(key) {
-      const data = photoData[key];
-      if (data) {
-        document.getElementById('modal-photo-title').innerText = data.title;
-        document.getElementById('modal-photo-img').src = data.img;
-        document.getElementById('modal-photo-text').innerText = data.text;
-        document.getElementById('photo-modal').classList.add('active');
-        fireConfetti();
-      }
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function fireConfetti() {
