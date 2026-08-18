@@ -34,25 +34,17 @@
       position: relative;
     }
 
-   /* 🔒 パスコードロック画面（下に絶対に隙間を作らない設定） */
+    /* 🔒 パスコードロック画面（完全遮断・最手前表示） */
     #lock-screen {
       position: fixed; 
-      top: 0; 
-      left: 0; 
-      right: 0;
-      bottom: 0;
-      width: 100%; 
-      height: 100%;
-      background-color: var(--bg-color); /* 背景色を確実に適用 */
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center;
-      z-index: 999999; /* 一番手前 */
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      background-color: #fdf6e2;
+      display: flex; flex-direction: column; 
+      justify-content: center; align-items: center;
+      z-index: 999999;
       transition: opacity 0.5s ease, visibility 0.5s;
     }
-    
-    
     #lock-screen.unlocked { opacity: 0; visibility: hidden; pointer-events: none; }
 
     .lock-title {
@@ -129,14 +121,10 @@
       100% { transform: translateY(105vh) rotate(360deg); }
     }
 
-
-  /* タップキラキラ */
+    /* タップキラキラ */
     .tap-sparkle {
-      position: fixed; 
-      pointer-events: none; /* ← ★これを必ず入れる！（タップを通過させる） */
-      z-index: 9999;
-      font-size: 22px; 
-      animation: pop 0.6s ease-out forwards;
+      position: fixed; pointer-events: none; z-index: 9999999;
+      font-size: 22px; animation: pop 0.6s ease-out forwards;
     }
     @keyframes pop {
       0% { transform: scale(0.3) translate(0,0); opacity: 1; }
@@ -243,11 +231,9 @@
       box-shadow: 3px 3px 0 var(--text-color); font-size: 0.9rem;
     }
 
-    
-   /* 写真スライダー */
+    /* 写真スライダー */
     .marquee-section {
-      position: relative; /* 重なり順を制御できるように追加 */
-      z-index: 1; /* ロック画面より確実に後ろに配置 */
+      position: relative; z-index: 1;
       margin-top: 40px; overflow: hidden; background: #f7e1b5;
       padding: 18px 0; border-top: 4px dashed var(--text-color); border-bottom: 4px dashed var(--text-color);
     }
@@ -268,7 +254,7 @@
       margin: 0 10px; transform: rotate(-2deg); flex-shrink: 0; cursor: pointer;
     }
     .photo-card:nth-child(even) { transform: rotate(2deg); }
-    .photo-card img { width: 100%; aspect-ratio: 1 / 1; /* 正方形にする */ object-fit: cover; border: 2px solid var(--text-color); border-radius: 6px; }
+    .photo-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border: 2px solid var(--text-color); border-radius: 6px; }
     .photo-caption { font-size: 0.75rem; font-weight: 900; margin-top: 5px; }
   </style>
 </head>
@@ -373,11 +359,11 @@
     </div>
   </div>
 
-  <!-- 動画モーダル（9:16縦型対応） -->
+  <!-- 動画モーダル -->
   <div class="modal-overlay" id="movie-modal">
     <div class="modal-card">
       <div class="modal-large-title">🎬 MOVIE 🎬</div>
-      <video id="birthday-video" src="video.mp4.MP4" controls playsinline></video>
+      <video id="birthday-video" src="video.mp4" controls playsinline></video>
       <button class="close-btn" onclick="closeMovie()">閉じる</button>
     </div>
   </div>
@@ -565,11 +551,10 @@
         { title: "📸 MEMORY #5 (3/3)", img: "IMG_1328.jpeg", text: "ここに5-3のコメント" }
       ],
       photo6: [
-        { title: "📸 MEMORY #6", img: "IMG_1334.jpeg", text: "ぼろぼろの私のところへ駆けつけてくれてありがとう。
-          スーパーヒーローかと思ったよ" },
+        { title: "📸 MEMORY #6", img: "IMG_1334.jpeg", text: "ぼろぼろの私のところへ駆けつけてくれてありがとう。\nスーパーヒーローかと思ったよ" },
         { title: "📸 MEMORY #6", img: "IMG_1407.jpeg", text: "ここに6-2のコメント" },
         { title: "📸 MEMORY #6", img: "IMG_1443.jpeg", text: "ここに6-3のコメント" },
-        { title: "📸 MEMORY #6", img: "IMG_1333.jpeg", text: "ここに6-3のコメント" }
+        { title: "📸 MEMORY #6", img: "IMG_1333.jpeg", text: "ここに6-4のコメント" }
       ],
       photo7: [
         { title: "📸 MEMORY #7 (1/4)", img: "IMG_1329.jpeg", text: "ここに7-1のコメント" },
