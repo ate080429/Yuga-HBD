@@ -129,10 +129,14 @@
       100% { transform: translateY(105vh) rotate(360deg); }
     }
 
-    /* タップキラキラ */
+
+  /* タップキラキラ */
     .tap-sparkle {
-      position: fixed; pointer-events: none; z-index: 9999;
-      font-size: 22px; animation: pop 0.6s ease-out forwards;
+      position: fixed; 
+      pointer-events: none; /* ← ★これを必ず入れる！（タップを通過させる） */
+      z-index: 9999;
+      font-size: 22px; 
+      animation: pop 0.6s ease-out forwards;
     }
     @keyframes pop {
       0% { transform: scale(0.3) translate(0,0); opacity: 1; }
