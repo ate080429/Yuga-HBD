@@ -668,12 +668,19 @@
         { char: '🍰', pts: 100 },
         { char: '🍻', pts: 200 },
         { char: '🎁', pts: 150 },
-        { char: '🎉', pts: 100 },
-        { char: '💎', pts: 1000 }
+        { char: '🎉', pts: 100 }
       ];
 
       setInterval(() => {
-        const itemObj = items[Math.floor(Math.random() * items.length)];
+        // 5%の確率（0.05未満）の時だけダイヤモンドにする！
+        let itemObj;
+        if (Math.random() < 0.05) {
+          itemObj = { char: '💎', pts: 1000 };
+        } else {
+          // それ以外は普通の4種類からランダムに選ぶ
+          itemObj = items[Math.floor(Math.random() * items.length)];
+        }
+
         const el = document.createElement('div');
         el.className = 'falling-item';
         el.innerText = itemObj.char;
@@ -695,7 +702,8 @@
         document.body.appendChild(el);
         setTimeout(() => el.remove(), 5000);
       }, 600);
-    }
+}
+    
 
     let headerTap = 0;
     function countHeaderTap() {
