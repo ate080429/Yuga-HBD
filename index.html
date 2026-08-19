@@ -714,7 +714,7 @@
   // 【大量タイム（フィーバー）を発動する関数】
   function triggerFever() {
     // 画面に「FEVER!」と一瞬メッセージを出すサプライズ演出
-    showSecret("🔥 大量フィーバータイム！！", "3秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
+    showSecret("🔥 大量フィーバータイム！！", "5秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
 
     // 通常の降り方を一時ストップ
     clearInterval(normalInterval);
@@ -726,7 +726,7 @@
     setTimeout(() => {
       clearInterval(feverInterval);
       normalInterval = setInterval(() => spawnItem(false), 600);
-    }, 3000);
+    }, 5000);
   }
 
   // 1. サイトを開いて30秒後に最初の大量タイム発動
