@@ -664,46 +664,82 @@
     }
 
     function startFallingGame() {
-      const items = [
-        { char: '🍰', pts: 100 },
-        { char: '🍻', pts: 200 },
-        { char: '🎁', pts: 150 },
-        { char: '🎉', pts: 100 }
-      ];
+  const items = [
+    { char: '🍰', pts: 100 },
+    { char: '🍻', pts: 200 },
+    { char: '🎁', pts: 150 },
+    { char: '🎉', pts: 100 }
+  ];
 
-      setInterval(() => {
-        // 5%の確率（0.05未満）の時だけダイヤモンドにする！
-        let itemObj;
-        if (Math.random() < 0.05) {
-          itemObj = { char: '💎', pts: 1000 };
-        } else {
-          // それ以外は普通の4種類からランダムに選ぶ
-          itemObj = items[Math.floor(Math.random() * items.length)];
-        }
-
-        const el = document.createElement('div');
-        el.className = 'falling-item';
-        el.innerText = itemObj.char;
-        el.style.left = Math.random() * 85 + 5 + 'vw';
-        el.style.animationDuration = (Math.random() * 2 + 3) + 's';
-
-        el.onclick = function(e) {
-          e.stopPropagation();
-          addScore(itemObj.pts);
-          createSparkle(e.clientX, e.clientY);
-          fireConfetti();
-
-          if (itemObj.char === '💎') {
-            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
-          }
-          el.remove();
-        };
-
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 5000);
-      }, 600);
-}
+  // 1個のアイテムを降らせる処理
+  function spawnItem(isFever = false) {
+    // 通常時は5%の確率でダイヤ、フィーバー中は15%にアップ！
+    const diamondChance = isFever ? 0.15 : 0.05;
     
+    let itemObj;
+    if (Math.random() < diamondChance) {
+      itemObj = { char: '💎', pts: 1000 };
+    } else {
+      itemObj = items[Math.floor(Math.random() * items.length)];
+    }
+
+    const el = document.createElement('div');
+    el.className = 'falling-item';
+    el.innerText = itemObj.char;
+    el.style.left = Math.random() * 85 + 5 + 'vw';
+    
+    // フィーバー中は落下スピードも少し速くして爽快感アップ
+    const speed = isFever ? (Math.random() * 1.5 + 1.5) : (Math.random() * 2 + 3);
+    el.style.animationDuration = speed + 's';
+
+    el.onclick = function(e) {
+      e.stopPropagation();
+      addScore(itemObj.pts);
+      createSparkle(e.clientX, e.clientY);
+      fireConfetti();
+
+      if (itemObj.char === '💎') {
+        showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
+      }
+      el.remove();
+    };
+
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+
+  // 【通常時】600ミリ秒（0.6秒）に1個降らせる
+  let normalInterval = setInterval(() => spawnItem(false), 600);
+
+  // 【大量タイム（フィーバー）を発動する関数】
+  function triggerFever() {
+    // 画面に「FEVER!」と一瞬メッセージを出すサプライズ演出
+    showSecret("🔥 大量フィーバータイム！！", "3秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
+
+    // 通常の降り方を一時ストップ
+    clearInterval(normalInterval);
+
+    // 80ミリ秒（超高速）で怒涛のラッシュ！
+    const feverInterval = setInterval(() => spawnItem(true), 80);
+
+    // 3秒（3000ミリ秒）後にフィーバー終了して通常モードに戻す
+    setTimeout(() => {
+      clearInterval(feverInterval);
+      normalInterval = setInterval(() => spawnItem(false), 600);
+    }, 3000);
+  }
+
+  // 1. サイトを開いて30秒後に最初の大量タイム発動
+  setTimeout(() => {
+    triggerFever();
+
+    // 2. その後は45秒ごとに繰り返し大量タイムを発生させる
+    setInterval(() => {
+      triggerFever();
+    }, 45000);
+
+  }, 30000);
+}
 
     let headerTap = 0;
     function countHeaderTap() {
