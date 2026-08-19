@@ -8,6 +8,10 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
+    /* 全要素でダブルタップによる拡大を防止 */
+* {
+  touch-action: manipulation;
+}
     :root {
       --bg-color: #fdf6e2;
       --accent-pink: #ff85a2;
