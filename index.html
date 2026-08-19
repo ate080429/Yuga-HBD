@@ -8,10 +8,21 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
-    /* 全要素でダブルタップによる拡大を防止 */
-* {
-  touch-action: manipulation;
-}
+    /* 縦スクロールを残しつつ、横揺れ・ダブルタップ拡大を防止 */
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;  /* 横ブレを防止 */
+      overflow-y: auto;    /* 縦スクロールはOK */
+      touch-action: pan-y; /* 縦スクロール以外の拡大操作を無効化 */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    * {
+      box-sizing: border-box;
+      touch-action: pan-y; /* 連打しても拡大されないようにする */
+    }
+
     :root {
       --bg-color: #fdf6e2;
       --accent-pink: #ff85a2;
@@ -19,9 +30,6 @@
       --accent-red: #e84118;
       --text-color: #4a3f35;
     }
-
-    * { box-sizing: border-box; touch-action: manipulation; }
-
     body {
       margin: 0; padding: 0;
       background-color: var(--bg-color);
