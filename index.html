@@ -529,7 +529,7 @@
       }
     }
 
-    /* 📸 写真グループデータ */
+   /* 📸 写真グループデータ */
     const photoGroups = {
       photo1: [
         { title: "📸 MEMORY #1", img: "IMG_1456.jpeg", text: "とっても緊張しました東京駅も迷子だし、、\nやさしくてよかった" },
@@ -582,6 +582,11 @@
     let currentGroupKey = "";
     let currentPhotoIndex = 0;
 
+    // ★ポイント初回獲得チェック用の変数（フラグ）★
+    let hasGotPhoto3_2Pt = false;
+    let photo8ViewedIndices = new Set(); // #8で閲覧した写真のインデックスを記録
+    let hasGotPhoto8Pt = false;
+
     function openPhotoModal(key) {
       currentGroupKey = key;
       currentPhotoIndex = 0;
@@ -598,6 +603,25 @@
       document.getElementById('modal-photo-title').innerText = data.title;
       document.getElementById('modal-photo-img').src = data.img;
       document.getElementById('modal-photo-text').innerText = data.text;
+
+      // ★【条件1】photo3の2枚目（インデックス: 1）を開いたとき
+      if (currentGroupKey === 'photo3' && currentPhotoIndex === 1 && !hasGotPhoto3_2Pt) {
+        hasGotPhoto3_2Pt = true;
+        addScore(100);
+        fireConfetti();
+        showSecret("✨ シークレット発見！", +100pt！🎉");
+      }
+
+     // ★【条件2】photo8の写真を1枚開くごとに100pt（1枚につき1回まで）
+      if (currentGroupKey === 'photo8') {
+        // まだこの写真でポイントをもらっていない場合
+        if (!photo8ViewedIndices.has(currentPhotoIndex)) {
+          photo8ViewedIndices.add(currentPhotoIndex); // もらったことを記録
+          addScore(100);
+          fireConfetti();
+          showSecret("💖+100pt💖 (${photo8ViewedIndices.size}/4枚目)`);
+        }
+      }
     }
 
     function nextPhoto() {
