@@ -8,19 +8,35 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
-    /* 縦スクロールを残しつつ、横揺れ・ダブルタップ拡大を防止 */
-    html, body {
+    /* 画面全体の拡大防止 & スクロール設定 */
+    html {
       width: 100%;
-      min-height: 100vh;
-      overflow-x: hidden;  /* 横ブレを防止 */
-      overflow-y: auto;    /* 縦スクロールはOK */
-      touch-action: pan-y; /* 縦スクロール以外の拡大操作を無効化 */
-      -webkit-overflow-scrolling: touch;
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0; padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background-color: #fdf6e2;
+      background-image: radial-gradient(#e5d8bd 2px, transparent 2px);
+      background-size: 20px 20px;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      color: #4a3f35;
+      text-align: center;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: background-color 0.5s;
+      position: relative;
+      touch-action: manipulation; /* ダブルタップ拡大防止 */
     }
 
     * {
       box-sizing: border-box;
-      touch-action: pan-y; /* 連打しても拡大されないようにする */
+      touch-action: manipulation;
     }
 
     :root {
@@ -30,23 +46,8 @@
       --accent-red: #e84118;
       --text-color: #4a3f35;
     }
-    body {
-      margin: 0; padding: 0;
-      background-color: var(--bg-color);
-      background-image: radial-gradient(#e5d8bd 2px, transparent 2px);
-      background-size: 20px 20px;
-      font-family: 'Zen Maru Gothic', sans-serif;
-      color: var(--text-color);
-      text-align: center;
-      overflow-x: hidden;
-      min-height: 100vh;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-      transition: background-color 0.5s;
-      position: relative;
-    }
 
-    /* 🔒 パスコードロック画面（完全遮断・最手前表示） */
+    /* 🔒 パスコードロック画面 */
     #lock-screen {
       position: fixed; 
       top: 0; left: 0; right: 0; bottom: 0;
@@ -112,7 +113,7 @@
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* レベルアップ ポップアップアニメーション */
+    /* レベルアップ ポップアップ */
     .levelup-banner {
       position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0);
       background: #fbc531; border: 4px solid var(--text-color);
@@ -222,7 +223,7 @@
       border: 3px solid var(--text-color); border-radius: 14px; margin-bottom: 10px;
     }
 
-    /* 📱 9:16（縦型）動画モーダル */
+    /* 🎬 動画モーダル */
     #movie-modal .modal-card { max-width: 320px; padding: 16px; }
     #movie-modal video {
       width: 100%; height: auto; max-height: 60vh;
@@ -231,12 +232,13 @@
       margin-bottom: 5px; background: #000;
     }
 
-   .message-text {
+    /* ★ 文章の独立スクロールを確実に動かす設定 ★ */
+    .message-text {
       text-align: left; line-height: 1.6; font-size: 0.88rem;
       white-space: pre-wrap; max-height: 180px; 
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
     }
 
     .close-btn {
@@ -271,6 +273,17 @@
     .photo-card:nth-child(even) { transform: rotate(2deg); }
     .photo-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border: 2px solid var(--text-color); border-radius: 6px; }
     .photo-caption { font-size: 0.75rem; font-weight: 900; margin-top: 5px; }
+
+    /* 画面サイズリセット（右下・控えめな丸型アイコン） */
+    .zoom-reset-btn {
+      position: fixed; bottom: 20px; right: 20px; z-index: 99999;
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85); color: #4a3f35;
+      border: 1px solid rgba(0, 0, 0, 0.15); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0.7; transition: opacity 0.2s, transform 0.2s;
+    }
+    .zoom-reset-btn:active { transform: scale(0.9); opacity: 1; }
   </style>
 </head>
 <body>
@@ -404,21 +417,20 @@
     </div>
   </div>
 
-  <script>
-    window.addEventListener('resize', resetZoom);
-    function resetZoom() {
-      if (window.visualViewport && window.visualViewport.scale !== 1) {
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-        }
-      }
-    }
+  <!-- 右下のスマートな画面サイズリセットボタン -->
+  <button class="zoom-reset-btn" onclick="forceResetScreen()" title="画面サイズをリセット">
+    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none">
+      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+    </svg>
+  </button>
 
+  <script>
+    // ピンチズーム（二本指での拡大）のみを無効化（指一本のスクロールは邪魔しない）
     document.addEventListener('gesturestart', function(e) {
       e.preventDefault();
     });
 
+    // 万が一拡大された際に一瞬で元のサイズへ強制リセットする関数
     function forceResetScreen() {
       const meta = document.querySelector('meta[name="viewport"]');
       if (meta) {
@@ -429,6 +441,7 @@
       }
       window.scrollTo(0, 0);
     }
+
     let enteredPass = "";
     const correctPass = "0909";
 
@@ -565,7 +578,7 @@
       }
     }
 
-   /* 📸 写真グループデータ */
+    /* 📸 写真グループデータ */
     const photoGroups = {
       photo1: [
         { title: "📸 MEMORY #1", img: "IMG_1456.jpeg", text: "とっても緊張しました東京駅も迷子だし、、\nやさしくてよかった" },
@@ -618,9 +631,8 @@
     let currentGroupKey = "";
     let currentPhotoIndex = 0;
 
-    // ★ポイント初回獲得チェック用の変数（フラグ）★
     let hasGotPhoto3_2Pt = false;
-    let photo8ViewedIndices = new Set(); // #8で閲覧した写真のインデックスを記録
+    let photo8ViewedIndices = new Set();
 
     function openPhotoModal(key) {
       currentGroupKey = key;
@@ -639,7 +651,6 @@
       document.getElementById('modal-photo-img').src = data.img;
       document.getElementById('modal-photo-text').innerText = data.text;
 
-      // ★【条件1】photo3の2枚目（インデックス: 1）を開いたとき
       if (currentGroupKey === 'photo3' && currentPhotoIndex === 1 && !hasGotPhoto3_2Pt) {
         hasGotPhoto3_2Pt = true;
         addScore(100);
@@ -647,17 +658,16 @@
         showSecret("✨ シークレット発見！", "+100pt！🎉");
       }
 
-   if (currentGroupKey === 'photo8') {
+      if (currentGroupKey === 'photo8') {
         if (!photo8ViewedIndices.has(currentPhotoIndex)) {
           photo8ViewedIndices.add(currentPhotoIndex);
           addScore(100);
           fireConfetti();
-          showMiniToast("💖+100pt💖"); // 画面上にふわっと出る簡易表示
+          showMiniToast("💖+100pt💖");
         }
       }
     }
 
-    // 画面中央に簡単な通知を表示して自動で消す関数
     function showMiniToast(text) {
       const toast = document.createElement('div');
       toast.innerText = text;
@@ -800,10 +810,9 @@
 
       let normalInterval = setInterval(() => spawnItem(false), 600);
 
-    function triggerFever() {
-        // モーダルではなくミニ通知（トースト）で画面を遮らないように表示
+      function triggerFever() {
         showMiniToast("🔥 大量フィーバータイム！！ 🔥");
-
+        
         clearInterval(normalInterval);
         const feverInterval = setInterval(() => spawnItem(true), 80);
 
@@ -812,6 +821,7 @@
           normalInterval = setInterval(() => spawnItem(false), 600);
         }, 6000);
       }
+
       setTimeout(() => {
         triggerFever();
         setInterval(() => {
@@ -864,26 +874,37 @@
       document.getElementById('secret-text').innerText = text;
       document.getElementById('secret-modal').classList.add('active');
     }
-    function openGiftMessage() { fireConfetti(); document.getElementById('gift-modal').classList.add('active'); }
+
+    function openGiftMessage() {
+      document.getElementById('gift-modal').classList.add('active');
+      fireConfetti();
+    }
+
     function openMovieModal() {
       document.getElementById('movie-modal').classList.add('active');
-      const v = document.getElementById('birthday-video');
-      if(v) v.play();
+      const video = document.getElementById('birthday-video');
+      if (video) video.play();
     }
+
     function closeMovie() {
-      const v = document.getElementById('birthday-video');
-      if(v) v.pause();
+      const video = document.getElementById('birthday-video');
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
       closeModal('movie-modal');
     }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
     function fireConfetti() {
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 90, 
-          spread: 60, 
-          origin: { y: 0.6 },
-          colors: ['#ff85a2', '#fbc531', '#e84118', '#00cec9', '#a29bfe']
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 }
         });
       }
     }
