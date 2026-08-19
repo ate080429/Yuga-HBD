@@ -736,11 +736,11 @@ setTimeout(() => {
     // 80ミリ秒（超高速）で怒涛のラッシュ！
     const feverInterval = setInterval(() => spawnItem(true), 80);
 
-    // 3秒（3000ミリ秒）後にフィーバー終了して通常モードに戻す
+    // 5秒（5000ミリ秒）後にフィーバー終了して通常モードに戻す
     setTimeout(() => {
       clearInterval(feverInterval);
       normalInterval = setInterval(() => spawnItem(false), 600);
-    }, 5000);
+    }, 6000);
   }
 
   // 1. サイトを開いて30秒後に最初の大量タイム発動
