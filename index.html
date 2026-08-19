@@ -585,7 +585,6 @@
     // ★ポイント初回獲得チェック用の変数（フラグ）★
     let hasGotPhoto3_2Pt = false;
     let photo8ViewedIndices = new Set(); // #8で閲覧した写真のインデックスを記録
-    let hasGotPhoto8Pt = false;
 
     function openPhotoModal(key) {
       currentGroupKey = key;
@@ -609,17 +608,16 @@
         hasGotPhoto3_2Pt = true;
         addScore(100);
         fireConfetti();
-        showSecret("✨ シークレット発見！", +100pt！🎉");
+        showSecret("✨ シークレット発見！", "+100pt！🎉");
       }
 
      // ★【条件2】photo8の写真を1枚開くごとに100pt（1枚につき1回まで）
       if (currentGroupKey === 'photo8') {
-        // まだこの写真でポイントをもらっていない場合
         if (!photo8ViewedIndices.has(currentPhotoIndex)) {
-          photo8ViewedIndices.add(currentPhotoIndex); // もらったことを記録
+          photo8ViewedIndices.add(currentPhotoIndex);
           addScore(100);
           fireConfetti();
-          showSecret("💖+100pt💖 (${photo8ViewedIndices.size}/4枚目)`);
+          showSecret("💖+100pt💖", `(${photo8ViewedIndices.size}/4枚目)`);
         }
       }
     }
@@ -688,35 +686,32 @@
     }
 
     function startFallingGame() {
-  const items = [
-    { char: '🍰', pts: 100 },
-    { char: '🍻', pts: 200 },
-    { char: '🎁', pts: 150 },
-    { char: '🎉', pts: 100 }
-  ];
+      const items = [
+        { char: '🍰', pts: 100 },
+        { char: '🍻', pts: 200 },
+        { char: '🎁', pts: 150 },
+        { char: '🎉', pts: 100 }
+      ];
 
-  // 1個のアイテムを降らせる処理
-  function spawnItem(isFever = false) {
-    // 通常時は5%の確率でダイヤ、フィーバー中は15%にアップ！
-    const diamondChance = isFever ? 0.15 : 0.05;
-    
-    let itemObj;
-    if (Math.random() < diamondChance) {
-      itemObj = { char: '💎', pts: 1000 };
-    } else {
-      itemObj = items[Math.floor(Math.random() * items.length)];
-    }
+      function spawnItem(isFever = false) {
+        const diamondChance = isFever ? 0.15 : 0.05;
+        
+        let itemObj;
+        if (Math.random() < diamondChance) {
+          itemObj = { char: '💎', pts: 1000 };
+        } else {
+          itemObj = items[Math.floor(Math.random() * items.length)];
+        }
 
-    const el = document.createElement('div');
-    el.className = 'falling-item';
-    el.innerText = itemObj.char;
-    el.style.left = Math.random() * 85 + 5 + 'vw';
-    
-    // フィーバー中は落下スピードも少し速くして爽快感アップ
-    const speed = isFever ? (Math.random() * 1.5 + 1.5) : (Math.random() * 2 + 3);
-    el.style.animationDuration = speed + 's';
+        const el = document.createElement('div');
+        el.className = 'falling-item';
+        el.innerText = itemObj.char;
+        el.style.left = Math.random() * 85 + 5 + 'vw';
+        
+        const speed = isFever ? (Math.random() * 1.5 + 1.5) : (Math.random() * 2 + 3);
+        el.style.animationDuration = speed + 's';
 
-    const handleTap = function(e) {
+        const handleTap = function(e) {
           if (e.type === 'touchstart') e.preventDefault();
           e.stopPropagation();
           
@@ -735,49 +730,36 @@
         el.addEventListener('touchstart', handleTap, { passive: false });
         el.addEventListener('click', handleTap);
 
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 5000);
-  }
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }
 
-  // 【通常時】600ミリ秒（0.6秒）に1個降らせる
-  let normalInterval = setInterval(() => spawnItem(false), 600);
+      let normalInterval = setInterval(() => spawnItem(false), 600);
 
-  // 【大量タイム（フィーバー）を発動する関数】
-  function triggerFever() {
-    // 画面に「FEVER!」と一瞬メッセージを出すサプライズ演出
-    showSecret("🔥 大量フィーバータイム！！", "5秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
+      function triggerFever() {
+        showSecret("🔥 大量フィーバータイム！！", "5秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
 
-setTimeout(() => {
-      // ポップアップ画面（またはモーダル）を消す処理
-      // ※もし閉じる用の関数（closeSecretなど）があればそれを呼び出します
-      const modal = document.querySelector('.modal') || document.querySelector('#secret-modal');
-      if (modal) modal.style.display = 'none';
-    }, 1000);
-    
-    // 通常の降り方を一時ストップ
-    clearInterval(normalInterval);
+        setTimeout(() => {
+          const modal = document.querySelector('#secret-modal');
+          if (modal) modal.classList.remove('active');
+        }, 1000);
+        
+        clearInterval(normalInterval);
+        const feverInterval = setInterval(() => spawnItem(true), 80);
 
-    // 80ミリ秒（超高速）で怒涛のラッシュ！
-    const feverInterval = setInterval(() => spawnItem(true), 80);
+        setTimeout(() => {
+          clearInterval(feverInterval);
+          normalInterval = setInterval(() => spawnItem(false), 600);
+        }, 6000);
+      }
 
-    // 5秒（5000ミリ秒）後にフィーバー終了して通常モードに戻す
-    setTimeout(() => {
-      clearInterval(feverInterval);
-      normalInterval = setInterval(() => spawnItem(false), 600);
-    }, 6000);
-  }
-
-  // 1. サイトを開いて30秒後に最初の大量タイム発動
-  setTimeout(() => {
-    triggerFever();
-
-    // 2. その後は45秒ごとに繰り返し大量タイムを発生させる
-    setInterval(() => {
-      triggerFever();
-    }, 45000);
-
-  }, 30000);
-}
+      setTimeout(() => {
+        triggerFever();
+        setInterval(() => {
+          triggerFever();
+        }, 45000);
+      }, 30000);
+    }
 
     let headerTap = 0;
     function countHeaderTap() {
@@ -835,11 +817,16 @@ setTimeout(() => {
       closeModal('movie-modal');
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    
     function fireConfetti() {
-      confetti({
-        particleCount: 90, spread: 60, origin: { y: 0.6 },
-        colors: ['#ff85a2', '#fbc531', '#a29bfe', '#fd79a8', '#55efc4', '#ff7675']
-      });
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 90, 
+          spread: 60, 
+          origin: { y: 0.6 },
+          colors: ['#ff85a2', '#fbc531', '#e84118', '#00cec9', '#a29bfe']
+        });
+      }
     }
   </script>
 </body>
