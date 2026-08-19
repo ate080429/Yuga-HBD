@@ -405,6 +405,30 @@
   </div>
 
   <script>
+    window.addEventListener('resize', resetZoom);
+    function resetZoom() {
+      if (window.visualViewport && window.visualViewport.scale !== 1) {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        }
+      }
+    }
+
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    });
+
+    function forceResetScreen() {
+      const meta = document.querySelector('meta[name="viewport"]');
+      if (meta) {
+        meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
+        setTimeout(() => {
+          meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        }, 100);
+      }
+      window.scrollTo(0, 0);
+    }
     let enteredPass = "";
     const correctPass = "0909";
 
