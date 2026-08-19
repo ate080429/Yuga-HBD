@@ -692,17 +692,24 @@
     const speed = isFever ? (Math.random() * 1.5 + 1.5) : (Math.random() * 2 + 3);
     el.style.animationDuration = speed + 's';
 
-    el.onclick = function(e) {
-      e.stopPropagation();
-      addScore(itemObj.pts);
-      createSparkle(e.clientX, e.clientY);
-      fireConfetti();
+    const handleTap = function(e) {
+          if (e.type === 'touchstart') e.preventDefault();
+          e.stopPropagation();
+          
+          addScore(itemObj.pts);
+          const x = e.clientX || (e.touches && e.touches[0].clientX);
+          const y = e.clientY || (e.touches && e.touches[0].clientY);
+          createSparkle(x, y);
+          fireConfetti();
 
-      if (itemObj.char === '💎') {
-        showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
-      }
-      el.remove();
-    };
+          if (itemObj.char === '💎') {
+            showSecret("💎 激レアダイヤモンド発見！", "大吉！+1000pt獲得！\n20歳は超強運な1年になる予感…！！✨");
+          }
+          el.remove();
+        };
+
+        el.addEventListener('touchstart', handleTap, { passive: false });
+        el.addEventListener('click', handleTap);
 
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 5000);
