@@ -611,15 +611,43 @@
         showSecret("✨ シークレット発見！", "+100pt！🎉");
       }
 
-     // ★【条件2】photo8の写真を1枚開くごとに100pt（1枚につき1回まで）
-      if (currentGroupKey === 'photo8') {
+   if (currentGroupKey === 'photo8') {
         if (!photo8ViewedIndices.has(currentPhotoIndex)) {
           photo8ViewedIndices.add(currentPhotoIndex);
           addScore(100);
           fireConfetti();
-          showSecret("💖+100pt💖");
+          showMiniToast("💖+100pt💖"); // 画面上にふわっと出る簡易表示
         }
       }
+    }
+
+    // 画面中央に簡単な通知を表示して自動で消す関数
+    function showMiniToast(text) {
+      const toast = document.createElement('div');
+      toast.innerText = text;
+      toast.style.position = 'fixed';
+      toast.style.top = '40%';
+      toast.style.left = '50%';
+      toast.style.transform = 'translate(-50%, -50%)';
+      toast.style.background = 'rgba(255, 133, 162, 0.95)';
+      toast.style.color = 'white';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = '30px';
+      toast.style.fontFamily = "'Mochiy Pop P One', sans-serif";
+      toast.style.fontSize = '1.2rem';
+      toast.style.border = '3px solid #4a3f35';
+      toast.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+      toast.style.zIndex = '999999';
+      toast.style.pointerEvents = 'none';
+      toast.style.transition = 'all 0.5s ease';
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, -80%)';
+        setTimeout(() => toast.remove(), 500);
+      }, 1000);
     }
 
     function nextPhoto() {
