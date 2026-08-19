@@ -723,6 +723,13 @@
     // 画面に「FEVER!」と一瞬メッセージを出すサプライズ演出
     showSecret("🔥 大量フィーバータイム！！", "5秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
 
+setTimeout(() => {
+      // ポップアップ画面（またはモーダル）を消す処理
+      // ※もし閉じる用の関数（closeSecretなど）があればそれを呼び出します
+      const modal = document.querySelector('.modal') || document.querySelector('#secret-modal');
+      if (modal) modal.style.display = 'none';
+    }, 1000);
+    
     // 通常の降り方を一時ストップ
     clearInterval(normalInterval);
 
