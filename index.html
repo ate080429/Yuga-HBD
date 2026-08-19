@@ -776,14 +776,10 @@
 
       let normalInterval = setInterval(() => spawnItem(false), 600);
 
-      function triggerFever() {
-        showSecret("🔥 大量フィーバータイム！！", "5秒間だけアイテムが大量に降ってくるよ！連打してポイントを稼げ！🎉");
+    function triggerFever() {
+        // モーダルではなくミニ通知（トースト）で画面を遮らないように表示
+        showMiniToast("🔥 大量フィーバータイム！！ 🔥");
 
-        setTimeout(() => {
-          const modal = document.querySelector('#secret-modal');
-          if (modal) modal.classList.remove('active');
-        }, 1000);
-        
         clearInterval(normalInterval);
         const feverInterval = setInterval(() => spawnItem(true), 80);
 
@@ -792,7 +788,6 @@
           normalInterval = setInterval(() => spawnItem(false), 600);
         }, 6000);
       }
-
       setTimeout(() => {
         triggerFever();
         setInterval(() => {
